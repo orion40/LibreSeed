@@ -1,0 +1,94 @@
+Avoir des catégories pour trier les graines (TreeView au lieu de ListStore)
+Possiblité de cloné les graines (ex: on vient d'en racheter, leur date de péremption sera différente)
+
+Utiliser cmake pour pas se casser le cul
+Compiler dans un dossier ./build
+
+Appli C++
+Faire une mini db avec tes graines (catégories, temps de croissance, date de semis...)
+
+MVC
+Model ---> Seed, Image...
+View ----> GUI
+Controller ----> Controller
+
+Ou sauvegarder la db sous linux ? .config ? .share ?
+
+L'application commence, on charge la DB, on affiche un splashscreen avec une barre de chargement
+Le controler charge la bdd
+On remplit la GUI avec les élements de la BDD
+
+Graines:
+    Nom de la plante
+    Nom latin
+    Description
+    Date (faire un widget spécial ? avec des push down buttons pour les mois bons ?)
+        Semis
+        Récolte
+        Taille
+    ...
+    Temps de croissance en général
+    Type de sol
+    Anti insecte
+    Quantité restante (d'un nombre discret, une quantité à une estimation)
+    Date d'expiration (avec warning à ce sujet)
+
+Pouvoir trier ses graines et les choisir selons divers facteurs
+---
+Difficulté : juste besoin de temps, mieux gérer C++, GTKMM et SQLITE
+
+Si tout les champs sont vide, on pourra la supprimer
+Seed
+    seed_id
+    name
+    binomial_nomenclature
+    description
+    quantity_left
+
+    quantity_unit
+
+
+    category (fruit, legume, arbre, arbuste...)
+    dates (vector)
+        planting_date
+        harvest_date
+        cutting_date
+        expiration_date
+
+    images
+        image_name
+        image_description
+        images path
+
+    growth_duration (durée ? intervalles ?)
+    seed_going_time
+
+    ground_type
+    insect_repellent_properties
+
+Date
+    date_id
+    Name (planting, harvest...)
+    Month (JFMAMJJASOND); plus de granularité plus tard ? pour le moment, un flag
+
+Category
+    category_id
+    Name
+
+Image
+    image_id
+    Path
+    Name
+    Description
+
+ClassifiedBy
+    seed_id
+    category_id
+
+IllustratedBy
+    seed_id
+    image_id
+
+DateAnnotedBy
+    seed_id
+    date_id
