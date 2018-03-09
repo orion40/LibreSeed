@@ -8,10 +8,10 @@ Model::~Model(){
 
 }
 
-void Model::add(Seed* s){
+void Model::addSeed(Seed* s){
     m_seeds.push_back(s);
 }
 
-void Model::remove(Seed* s){
+void Model::removeSeed(Seed* s){
     m_seeds.remove(s);
 }

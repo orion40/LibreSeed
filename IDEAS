@@ -39,32 +39,33 @@ Difficulté : juste besoin de temps, mieux gérer C++, GTKMM et SQLITE
 
 Si tout les champs sont vide, on pourra la supprimer
 Seed
+    // Basic info
     seed_id
     name
     binomial_nomenclature
     description
     quantity_left
-
     quantity_unit
-
-
     category (fruit, legume, arbre, arbuste...)
+
+    // Farming info
+    ground_type
+    insect_repellent_properties
+    growth_duration (durée ? intervalles ?)
+    seed_going_time
+
+    // Dates
     dates (vector)
         planting_date
         harvest_date
         cutting_date
         expiration_date
 
+    // Pictures
     images
         image_name
         image_description
         images path
-
-    growth_duration (durée ? intervalles ?)
-    seed_going_time
-
-    ground_type
-    insect_repellent_properties
 
 Date
     date_id
