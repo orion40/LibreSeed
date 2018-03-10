@@ -12,10 +12,8 @@ class Seed{
         Seed();
         ~Seed();
 
-        bool fill_from_db();
         bool save_to_db();
-
-        void fill_from_sql(sqlite3_stmt*);
+        bool fill_from_sql(sqlite3_stmt*);
 
         int get_id(){return m_id;}
         std::string get_name(){return m_name;}

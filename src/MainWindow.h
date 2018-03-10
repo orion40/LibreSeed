@@ -15,10 +15,12 @@
 #include <gtkmm/liststore.h>
 #include <gtkmm/textview.h>
 #include <gtkmm/scrolledwindow.h>
+#include <gtkmm/searchbar.h>
+#include <gtkmm/searchentry.h>
 
 #include "Controller.h"
 #include "SeedColumnsModel.h"
-#include "SeedEditWindow.h"
+#include "SeedAddWindow.h"
 #include "Model.h"
 
 class MainWindow : public Gtk::Window {
@@ -46,7 +48,8 @@ class MainWindow : public Gtk::Window {
         Gtk::Window* m_window;
         Gtk::Box* m_main_box;
         Gtk::Box* m_control_box;
-        Gtk::Box* m_search_box;
+
+        Gtk::SearchBar* m_search_bar;
 
         // Menus
 
@@ -60,8 +63,10 @@ class MainWindow : public Gtk::Window {
         Gtk::ScrolledWindow* m_tree_view_scrolled_window;
 
         Gtk::TreeView* m_seed_list_store;
-        Gtk::TextView* m_search_text_view;
-        Gtk::Button* m_search_button;
+        Gtk::SearchEntry* m_search_text_view;
+
+        // Child windows
+        SeedAddWindow* m_seed_add_window;
 };
 
 #endif

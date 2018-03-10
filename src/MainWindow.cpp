@@ -1,7 +1,7 @@
 #include "MainWindow.h"
 
 MainWindow::MainWindow(){
-
+    m_seed_add_window = NULL;
 }
 
 
@@ -30,7 +30,7 @@ MainWindow::~MainWindow(){
 void MainWindow::create_gui(){
     m_main_box = new Gtk::Box(Gtk::ORIENTATION_VERTICAL);
     m_control_box = new Gtk::Box(Gtk::ORIENTATION_VERTICAL);
-    m_search_box = new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL);
+    m_search_bar = new Gtk::SearchBar();
 
     m_management_toolbar = new Gtk::Toolbar();
     m_add_button = new Gtk::ToolButton("Add");
@@ -43,8 +43,7 @@ void MainWindow::create_gui(){
     m_tree_view_scrolled_window->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
     m_seed_list_store = new Gtk::TreeView();
-    m_search_button = new Gtk::Button("Search");
-    m_search_text_view = new Gtk::TextView();
+    m_search_text_view = new Gtk::SearchEntry();
 
     // Add buttons to toolbar
     m_management_toolbar->append(*m_add_button);
@@ -57,11 +56,11 @@ void MainWindow::create_gui(){
     //m_management_toolbar->set_border_width(5);
 
     // Search elements
-    m_search_box->pack_start(*m_search_text_view);
-    m_search_box->pack_start(*m_search_button);
+    m_search_bar->connect_entry(*m_search_text_view);
+    m_search_bar->set_search_mode(true);
 
     m_control_box->pack_start(*m_management_toolbar, Gtk::PACK_SHRINK);
-    m_control_box->pack_start(*m_search_box, Gtk::PACK_SHRINK);
+    m_control_box->pack_start(*m_search_bar, Gtk::PACK_SHRINK);
 
     // Tree store and model
     m_seed_tree_model = Gtk::ListStore::create(m_seed_columns);
@@ -80,6 +79,8 @@ void MainWindow::create_gui(){
 
     show_all_children();
 
+    m_seed_list_store->grab_focus();
+
     set_default_size(500,500);
 }
 
@@ -88,8 +89,10 @@ void MainWindow::connect_signals(){
 }
 
 void MainWindow::on_add_button_clicked(){
-    SeedEditWindow *seedEditWindow = new SeedEditWindow();
-    seedEditWindow->show();
+    if (m_seed_add_window == NULL){
+        m_seed_add_window = new SeedAddWindow();
+    }
+    m_seed_add_window->show();
 }
 
 void MainWindow::fill_tree_store(){
@@ -106,7 +109,7 @@ void MainWindow::fill_tree_store(){
 void MainWindow::destroy_gui(){
     delete m_main_box;
     delete m_control_box;
-    delete m_search_box;
+    delete m_search_bar;
 
     delete m_management_toolbar;
     delete m_add_button;
@@ -117,6 +120,5 @@ void MainWindow::destroy_gui(){
     delete m_tree_view_scrolled_window;
 
     delete m_seed_list_store;
-    delete m_search_button;
     delete m_search_text_view;
 }
