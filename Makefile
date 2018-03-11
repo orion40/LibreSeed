@@ -23,7 +23,7 @@ $(OUT_DIR)/main.o: $(IN_DIR)/main.cpp
 	$(CC) $(CPPFLAGS) $^ $(GTKMM3_LIB) -c -o $@
 
 $(OUT_DIR)/Model.o: $(IN_DIR)/Model.cpp
-	$(CC) $(CPPFLAGS) $^ -c -o $@ $(GLIBMM_LIB)
+	$(CC) $(CPPFLAGS) $^ -c -o $@ $(GLIBMM_LIB) $(SQLITE3_LIB)
 
 $(OUT_DIR)/Controller.o: $(IN_DIR)/Controller.cpp
 	$(CC) $(CPPFLAGS) $^ -c -o $@ $(GLIBMM_LIB)

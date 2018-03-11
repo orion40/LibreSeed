@@ -18,6 +18,7 @@
 class SeedAddWindow : public Gtk::Window{
 public:
 	SeedAddWindow();
+	SeedAddWindow(Controller* controller);
 	~SeedAddWindow();
 
 private:
@@ -27,6 +28,8 @@ private:
         void connect_signals();
 
         void on_save_button_clicked();
+
+        Controller* m_controller;
 
         Gtk::Box* m_main_box;
         Gtk::Notebook* m_notebook;

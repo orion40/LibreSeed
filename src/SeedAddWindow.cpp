@@ -1,6 +1,11 @@
 #include "SeedAddWindow.h"
 
 SeedAddWindow::SeedAddWindow(){
+
+}
+
+SeedAddWindow::SeedAddWindow(Controller* controller){
+    m_controller = controller;
     create_gui();
     connect_signals();
 }
@@ -66,9 +71,12 @@ void SeedAddWindow::connect_signals(){
 }
 
 void SeedAddWindow::on_save_button_clicked(){
-    std::cout << m_name_entry->get_buffer()->get_text() << std::endl;
-    std::cout << m_binomial_name_entry->get_buffer()->get_text() << std::endl;
-    std::cout << m_description_textfield->get_buffer()->get_text() << std::endl;
+    Seed* seed = new Seed();
+    seed->set_name(m_name_entry->get_buffer()->get_text());
+    seed->set_binomial_nomenclature(m_binomial_name_entry->get_buffer()->get_text());
+    seed->set_description(m_description_textfield->get_buffer()->get_text());
+    seed->print_seed();
+    m_controller->get_model()->add_seed(seed);
 }
 
 void SeedAddWindow::destroy_gui(){

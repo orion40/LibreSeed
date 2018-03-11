@@ -5,13 +5,12 @@
 #include <iostream>
 #include <cstring>
 #include <fstream>
-#include <sqlite3.h>
 
 #include "Model.h"
 
 class Controller{
     public:
-        Controller(std::string path, Model* model);
+        Controller(Model* model);
         ~Controller();
 
         bool open_db();
@@ -24,7 +23,6 @@ class Controller{
         Model* m_model;
 
         std::string m_path;
-        sqlite3* m_db;
 };
 
 #endif
