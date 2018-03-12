@@ -13,6 +13,7 @@
 #include <gtkmm/stock.h>
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/liststore.h>
+#include <gtkmm/treemodel.h>
 #include <gtkmm/textview.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/searchbar.h>
@@ -36,6 +37,7 @@ class MainWindow : public Gtk::Window {
         void destroy_gui();
 
         void on_add_button_clicked();
+        void on_delete_button_clicked();
 
         // Controller
         Controller* m_controller;

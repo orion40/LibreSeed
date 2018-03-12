@@ -77,6 +77,7 @@ void SeedAddWindow::on_save_button_clicked(){
     seed->set_description(m_description_textfield->get_buffer()->get_text());
     seed->print_seed();
     m_controller->get_model()->add_seed(seed);
+    m_controller->get_model()->save_content();
 }
 
 void SeedAddWindow::destroy_gui(){

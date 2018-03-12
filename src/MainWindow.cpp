@@ -86,13 +86,28 @@ void MainWindow::create_gui(){
 
 void MainWindow::connect_signals(){
     m_add_button->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_add_button_clicked));
+    m_delete_button->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_delete_button_clicked));
 }
 
 void MainWindow::on_add_button_clicked(){
     if (m_seed_add_window == NULL){
-        m_seed_add_window = new SeedAddWindow();
+        m_seed_add_window = new SeedAddWindow(m_controller);
     }
     m_seed_add_window->show();
+}
+
+void MainWindow::on_delete_button_clicked(){
+    Glib::RefPtr<Gtk::TreeSelection> refTreeSelection = m_seed_list_store->get_selection();
+    Gtk::TreeModel::iterator iter = refTreeSelection ->get_selected();
+    if (iter){
+        Gtk::TreeModel::Row row = *iter;
+        std::cout << "Selected: ";
+        std::cout << row[m_seed_columns.m_seed_id] << " - ";
+        std::cout << row[m_seed_columns.m_seed_name] << " - ";
+        std::cout << row[m_seed_columns.m_seed_binomial_nomenclature] << " - ";
+        std::cout << row[m_seed_columns.m_seed_description] << "\n";
+
+    }
 }
 
 void MainWindow::fill_tree_store(){

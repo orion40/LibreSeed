@@ -63,7 +63,7 @@ bool Model::load_db(){
                 Seed* s = new Seed();
 
                 s->fill_from_sql(load_stmt);
-                m_model->addSeed(s);
+                add_seed(s);
 
             }
             switch (load_query_result){
@@ -125,4 +125,10 @@ bool Model::create_db(){
     }
 
     return false;
+}
+
+bool Model::save_content(){
+    for (std::list<Seed*>::iterator it = m_seeds.begin(); it != m_seeds.end(); it++){
+        (*it)->save_to_db(m_db);
+    }
 }
