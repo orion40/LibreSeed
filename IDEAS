@@ -31,9 +31,14 @@ Graines:
     Type de sol
     Anti insecte
     Quantité restante (d'un nombre discret, une quantité à une estimation)
+    Unité de quantité (ml, g, nb discret)
     Date d'expiration (avec warning à ce sujet)
 
-Pouvoir trier ses graines et les choisir selons divers facteurs
+Fonctionnalités clées :
+    Pouvoir ajouter des graines avec le max d'infos
+    Pouvoir trier ses graines et les choisir selons divers facteurs
+        Ex: semis mars, sol calcaire -> me met toutes les plantes qui correspondent
+
 ---
 Difficulté : juste besoin de temps, mieux gérer C++, GTKMM et SQLITE
 
@@ -44,8 +49,10 @@ Seed
     name
     binomial_nomenclature
     description
+
     quantity_left
     quantity_unit
+
     category (fruit, legume, arbre, arbuste...)
 
     // Farming info
