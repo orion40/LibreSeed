@@ -9,6 +9,7 @@
 #include <gtkmm/entry.h>
 #include <gtkmm/entrybuffer.h>
 #include <gtkmm/textview.h>
+#include <gtkmm/liststore.h>
 
 #include <iostream>
 
@@ -16,18 +17,19 @@
 #include "SeedColumnsModel.h"
 
 class SeedAddWindow : public Gtk::Window{
-public:
-	SeedAddWindow();
-	SeedAddWindow(Controller* controller);
-	~SeedAddWindow();
+    public:
+        SeedAddWindow();
+        SeedAddWindow(Controller* controller, Glib::RefPtr<Gtk::ListStore> seed_model, SeedColumnsModel* columns);
+        ~SeedAddWindow();
 
-private:
+    private:
         void create_gui();
         void destroy_gui();
 
         void connect_signals();
 
         void on_save_button_clicked();
+        void on_delete_button_clicked();
 
         Controller* m_controller;
 
@@ -49,7 +51,11 @@ private:
 
         Gtk::Toolbar* m_edit_toolbar;
         Gtk::ToolButton* m_save_button;
+        Gtk::ToolButton* m_delete_button;
 
+        // MainWindow ListStore model
+        Glib::RefPtr<Gtk::ListStore> m_seed_tree_model;
+        SeedColumnsModel* m_seed_columns;
 };
 
 #endif
