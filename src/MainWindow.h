@@ -22,6 +22,7 @@
 #include "Controller.h"
 #include "SeedColumnsModel.h"
 #include "SeedAddWindow.h"
+#include "SeedInfoWindow.h"
 #include "Model.h"
 
 class MainWindow : public Gtk::Window {
@@ -37,7 +38,12 @@ class MainWindow : public Gtk::Window {
         void destroy_gui();
 
         void on_add_button_clicked();
+        void on_open_seed_info_button_clicked();
         void on_delete_button_clicked();
+
+        void on_list_store_row_activated(const Gtk::TreeModel::Path&, Gtk::TreeViewColumn* column);
+
+        void open_seed_info(Seed* s);
 
         // Controller
         Controller* m_controller;
@@ -58,6 +64,7 @@ class MainWindow : public Gtk::Window {
 
         Gtk::Toolbar* m_management_toolbar;
         Gtk::ToolButton* m_add_button;
+        Gtk::ToolButton* m_open_card_button;
         Gtk::ToolButton* m_delete_button;
         Gtk::ToolButton* m_open_seed_info_button;
         Gtk::ToolButton* m_print_button;
@@ -69,6 +76,7 @@ class MainWindow : public Gtk::Window {
 
         // Child windows
         SeedAddWindow* m_seed_add_window;
+        SeedInfoWindow* m_seed_info_window;
 };
 
 #endif
