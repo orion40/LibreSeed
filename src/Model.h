@@ -20,6 +20,7 @@ class Model{
 
         void add_seed(Seed* s);
         void remove_seed(Seed* s);
+        Seed* getSeedById(int);
         std::list<Seed*> get_seeds(){return m_seeds;}
 
         bool save_content();

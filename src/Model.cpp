@@ -13,6 +13,27 @@ void Model::add_seed(Seed* s){
 }
 
 void Model::remove_seed(Seed* s){
+    int change_query_result, read_query_result;
+    sqlite3_stmt* edition_stmt;
+    sqlite3_stmt* read_stmt;
+    std::string insert_stmt_string = "DELETE FROM seed WHERE seed_id=?;";
+    change_query_result = sqlite3_prepare_v2(m_db, insert_stmt_string.c_str(), -1, &edition_stmt, NULL);
+    switch (change_query_result){
+        case SQLITE_OK:
+            sqlite3_bind_int(edition_stmt, 1, s->get_id());
+            switch (sqlite3_step(edition_stmt)){
+                case SQLITE_DONE:
+                    std::cout << "Successfully removed Seed from database\n";
+                    sqlite3_finalize(edition_stmt);
+                    break;
+                default:
+                    std::cerr << "Error removing from database.\n";
+                    break;
+            }
+            break;
+        default:
+            std::cerr << "Error preparing sql statement: " << sqlite3_errmsg(m_db) << std::endl;
+    }
     m_seeds.remove(s);
 }
 
@@ -131,4 +152,14 @@ bool Model::save_content(){
     for (std::list<Seed*>::iterator it = m_seeds.begin(); it != m_seeds.end(); it++){
         (*it)->save_to_db(m_db);
     }
+}
+
+Seed* Model::getSeedById(int id){
+    for (std::list<Seed*>::iterator it = m_seeds.begin(); it != m_seeds.end(); it++){
+        if ((*it)->get_id() == id){
+            return (*it);
+        }
+    }
+
+    return NULL;
 }
