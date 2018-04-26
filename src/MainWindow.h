@@ -18,6 +18,7 @@
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/searchbar.h>
 #include <gtkmm/searchentry.h>
+#include <gtkmm/accelgroup.h>
 
 #include "Controller.h"
 #include "SeedColumnsModel.h"
@@ -41,9 +42,14 @@ class MainWindow : public Gtk::Window {
         void on_open_seed_info_button_clicked();
         void on_delete_button_clicked();
 
+        void delete_selected_seed();
+        void open_add_seed_window();
+
         void on_list_store_row_activated(const Gtk::TreeModel::Path&, Gtk::TreeViewColumn* column);
 
         void open_seed_info(Seed* s);
+
+        bool on_key_press_event(GdkEventKey* event) override;
 
         // Controller
         Controller* m_controller;
@@ -77,6 +83,9 @@ class MainWindow : public Gtk::Window {
         // Child windows
         SeedAddWindow* m_seed_add_window;
         SeedInfoWindow* m_seed_info_window;
+
+        // AccelGroups for kb shortcuts
+        Gtk::AccelGroup* actions;
 };
 
 #endif

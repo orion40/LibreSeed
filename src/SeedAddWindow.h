@@ -31,6 +31,10 @@ class SeedAddWindow : public Gtk::Window{
         void on_save_button_clicked();
         void on_delete_button_clicked();
 
+        bool on_key_press_event(GdkEventKey* event) override;
+
+        void save_seed();
+
         Controller* m_controller;
 
         Gtk::Box* m_main_box;

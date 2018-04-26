@@ -104,8 +104,36 @@ void MainWindow::connect_signals(){
     m_seed_list_store->signal_row_activated().connect(sigc::mem_fun(*this, &MainWindow::on_list_store_row_activated));
 }
 
+bool MainWindow::on_key_press_event(GdkEventKey* key_event){
+
+    if(key_event->keyval == GDK_KEY_Delete){
+        // Delete key will delete selected seed(s ?)
+        delete_selected_seed();
+        return true;
+    }else if((key_event->keyval == GDK_KEY_n) &&
+            ((key_event->state & (GDK_CONTROL_MASK)) == GDK_CONTROL_MASK) || ((key_event->state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_MOD2_MASK)) == GDK_CONTROL_MASK)){
+            // CTRL + n open seed add window
+            open_add_seed_window();
+    }else if(key_event->keyval == GDK_KEY_Escape){
+        //close the window, when the 'esc' key is pressed
+        // TODO: ask for confirmation before closing
+        hide();
+        return true;
+    }
+
+    //if the event has not been handled, call the base class
+    return Gtk::Window::on_key_press_event(key_event);
+}
+
 void MainWindow::on_add_button_clicked(){
+    open_add_seed_window();
+}
+
+void MainWindow::open_add_seed_window(){
     if (m_seed_add_window == NULL){
+        m_seed_add_window = new SeedAddWindow(m_controller, m_seed_tree_model, &m_seed_columns);
+    } else {
+        delete m_seed_add_window;
         m_seed_add_window = new SeedAddWindow(m_controller, m_seed_tree_model, &m_seed_columns);
     }
     m_seed_add_window->show();
@@ -131,6 +159,10 @@ void MainWindow::on_open_seed_info_button_clicked(){
 }
 
 void MainWindow::on_delete_button_clicked(){
+    delete_selected_seed();
+}
+
+void MainWindow::delete_selected_seed(){
     Glib::RefPtr<Gtk::TreeSelection> refTreeSelection = m_seed_list_store->get_selection();
     Gtk::TreeModel::iterator iter = refTreeSelection ->get_selected();
     if (iter){
