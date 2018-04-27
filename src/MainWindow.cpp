@@ -35,10 +35,14 @@ void MainWindow::create_gui(){
 
     m_management_toolbar = new Gtk::Toolbar();
     m_add_button = new Gtk::ToolButton("Add");
+    m_add_button->set_icon_name("document-new");
     //m_add_button->set_icon_widget(Gtk::Stock::ADD);
     m_delete_button = new Gtk::ToolButton("Delete");
+    m_delete_button->set_icon_name("edit-delete");
     m_open_seed_info_button = new Gtk::ToolButton("Open Seed card");
+    m_open_seed_info_button->set_icon_name("document-open");
     m_print_button = new Gtk::ToolButton("Print");
+    m_print_button->set_icon_name("document-print");
 
     m_tree_view_scrolled_window = new Gtk::ScrolledWindow();
     m_tree_view_scrolled_window->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
@@ -154,6 +158,7 @@ void MainWindow::on_open_seed_info_button_clicked(){
                 false,
                 Gtk::MESSAGE_ERROR,
                 Gtk::BUTTONS_OK);
+        dialog.set_icon_name("dialog-error");
         dialog.run();
     }
 }
@@ -177,6 +182,7 @@ void MainWindow::delete_selected_seed(){
                 false /* use_markup */, Gtk::MESSAGE_WARNING,
                 Gtk::BUTTONS_YES_NO);
 
+        dialog_warning.set_icon_name("dialog-warning");
         int result = dialog_warning.run();
 
         //Handle the response:
@@ -206,6 +212,7 @@ void MainWindow::delete_selected_seed(){
                 false,
                 Gtk::MESSAGE_ERROR,
                 Gtk::BUTTONS_OK);
+        dialog.set_icon_name("dialog-error");
         dialog.run();
     }
 }
