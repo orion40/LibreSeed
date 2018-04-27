@@ -36,7 +36,6 @@ void MainWindow::create_gui(){
     m_management_toolbar = Gtk::manage(new Gtk::Toolbar());
     m_add_button = Gtk::manage(new Gtk::ToolButton("Add"));
     m_add_button->set_icon_name("document-new");
-    //m_add_button->set_icon_widget(Gtk::Stock::ADD);
     m_delete_button = Gtk::manage(new Gtk::ToolButton("Delete"));
     m_delete_button->set_icon_name("edit-delete");
     m_open_seed_info_button = Gtk::manage(new Gtk::ToolButton("Open Seed card"));
