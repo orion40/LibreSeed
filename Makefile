@@ -2,7 +2,7 @@ CC=g++
 IN_DIR=src
 OUT_DIR=build
 
-CPPFLAGS+=-ggdb
+CPPFLAGS+=-ggdb -Wall
 LDFLAGS=
 
 SQLITE3_LIB=`pkg-config --libs sqlite3`
