@@ -233,10 +233,13 @@ void MainWindow::on_list_store_row_activated(const Gtk::TreeModel::Path& path, G
 
 void MainWindow::open_seed_info(Seed* s){
     if (s){
-        if (m_seed_info_window == NULL){
-            m_seed_info_window = new SeedInfoWindow(m_controller, s, m_seed_tree_model, &m_seed_columns);
+        if (m_seed_add_window == NULL){
+            m_seed_add_window = new SeedAddWindow(m_controller, m_seed_tree_model, &m_seed_columns, s);
+        } else {
+            delete m_seed_add_window;
+            m_seed_add_window = new SeedAddWindow(m_controller, m_seed_tree_model, &m_seed_columns, s);
         }
-        m_seed_info_window->show();
+        m_seed_add_window->show();
     }
 }
 
