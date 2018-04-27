@@ -23,7 +23,6 @@
 #include "Controller.h"
 #include "SeedColumnsModel.h"
 #include "SeedAddWindow.h"
-#include "SeedInfoWindow.h"
 #include "Model.h"
 
 class MainWindow : public Gtk::Window {
