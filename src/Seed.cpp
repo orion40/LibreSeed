@@ -48,9 +48,8 @@ bool Seed::fill_from_sql(sqlite3_stmt* stmt){
 }
 
 bool Seed::save_to_db(sqlite3* db){
-    int change_query_result, read_query_result;
+    int change_query_result;
     sqlite3_stmt* edition_stmt;
-    sqlite3_stmt* read_stmt;
     if (get_id() == -1) {
         // non sauvegarde en BDD, il faut la créé
         // et récupéré l'ID associé
@@ -109,6 +108,7 @@ bool Seed::save_to_db(sqlite3* db){
 
         }
     }
+    return false;
 }
 
 void Seed::print_seed(){

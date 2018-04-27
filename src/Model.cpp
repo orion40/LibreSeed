@@ -13,9 +13,8 @@ void Model::add_seed(Seed* s){
 }
 
 void Model::remove_seed(Seed* s){
-    int change_query_result, read_query_result;
+    int change_query_result;
     sqlite3_stmt* edition_stmt;
-    sqlite3_stmt* read_stmt;
     std::string insert_stmt_string = "DELETE FROM seed WHERE seed_id=?;";
     change_query_result = sqlite3_prepare_v2(m_db, insert_stmt_string.c_str(), -1, &edition_stmt, NULL);
     switch (change_query_result){
@@ -149,9 +148,12 @@ bool Model::create_db(){
 }
 
 bool Model::save_content(){
-    for (std::list<Seed*>::iterator it = m_seeds.begin(); it != m_seeds.end(); it++){
-        (*it)->save_to_db(m_db);
+    bool result = true;
+    for (std::list<Seed*>::iterator it = m_seeds.begin(); it != m_seeds.end() && result == true; it++){
+        result = (*it)->save_to_db(m_db);
     }
+
+    return result;
 }
 
 Seed* Model::getSeedById(int id){

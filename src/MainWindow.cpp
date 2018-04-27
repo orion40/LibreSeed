@@ -113,7 +113,7 @@ bool MainWindow::on_key_press_event(GdkEventKey* key_event){
         delete_selected_seed();
         return true;
     }else if((key_event->keyval == GDK_KEY_n) &&
-            ((key_event->state & (GDK_CONTROL_MASK)) == GDK_CONTROL_MASK) || ((key_event->state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_MOD2_MASK)) == GDK_CONTROL_MASK)){
+            (((key_event->state & (GDK_CONTROL_MASK)) == GDK_CONTROL_MASK) || ((key_event->state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_MOD2_MASK)) == GDK_CONTROL_MASK))){
             // CTRL + n open seed add window
             open_add_seed_window();
     }else if(key_event->keyval == GDK_KEY_Escape){
