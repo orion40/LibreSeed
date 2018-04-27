@@ -116,7 +116,7 @@ bool SeedAddWindow::on_key_press_event(GdkEventKey* key_event){
     // TODO: add other stuff ?
 
     if((key_event->keyval == GDK_KEY_s) &&
-            ((key_event->state & (GDK_CONTROL_MASK)) == GDK_CONTROL_MASK) || ((key_event->state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_MOD2_MASK)) == GDK_CONTROL_MASK)){
+            (((key_event->state & (GDK_CONTROL_MASK)) == GDK_CONTROL_MASK) || ((key_event->state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_MOD2_MASK)) == GDK_CONTROL_MASK))){
         // CTRL + s save seed
         save_seed();
     }else if(key_event->keyval == GDK_KEY_Escape){
