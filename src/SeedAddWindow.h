@@ -6,6 +6,7 @@
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/toolbar.h>
 #include <gtkmm/notebook.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/entrybuffer.h>
 #include <gtkmm/textview.h>
@@ -44,17 +45,17 @@ class SeedAddWindow : public Gtk::Window{
         Gtk::Box* m_main_box;
         Gtk::Notebook* m_notebook;
 
-        Gtk::Box* m_main_info_box;
+        Gtk::Grid* m_main_info_grid;
         Gtk::Box* m_main_info_label_box;
         Gtk::Box* m_main_info_textfield_box;
         Gtk::Label* m_name_label;
         Gtk::Entry* m_name_entry;
         Gtk::Label* m_binomial_name_label;
         Gtk::Entry* m_binomial_name_entry;
-        Gtk::Label* m_description_label;
-        Gtk::TextView* m_description_textfield;
 
         Gtk::Box* m_description_box;
+        Gtk::TextView* m_description_textfield;
+
         Gtk::Box* m_dates_box;
         Gtk::Box* m_stock_box;
         Gtk::Box* m_pictures_box;

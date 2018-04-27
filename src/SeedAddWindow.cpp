@@ -40,9 +40,9 @@ void SeedAddWindow::create_gui(){
     m_notebook = Gtk::manage(new Gtk::Notebook());
     m_notebook->set_tab_pos(Gtk::POS_LEFT);
 
-    m_main_info_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
+    m_main_info_grid = Gtk::manage(new Gtk::Grid());
     // TODO: grid instead of vbox
-    m_main_info_label_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+    //m_main_info_label_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
     m_main_info_textfield_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
     m_name_label = Gtk::manage(new Gtk::Label("Name"));
@@ -50,22 +50,18 @@ void SeedAddWindow::create_gui(){
     m_binomial_name_label = Gtk::manage(new Gtk::Label("Binomial nomenclature"));
     m_binomial_name_entry = Gtk::manage(new Gtk::Entry());
     // TODO: a mettre dans un onglet à part ?
-    m_description_label = Gtk::manage(new Gtk::Label("Description"));
     m_description_textfield = Gtk::manage(Gtk::manage(new Gtk::TextView()));
     m_description_textfield->set_wrap_mode(Gtk::WRAP_WORD_CHAR);
 
-    m_main_info_label_box->pack_start(*m_name_label, Gtk::PACK_SHRINK);
-    m_main_info_label_box->pack_start(*m_binomial_name_label, Gtk::PACK_SHRINK);
-    m_main_info_label_box->pack_start(*m_description_label, Gtk::PACK_SHRINK);
-
-    m_main_info_textfield_box->pack_start(*m_name_entry, Gtk::PACK_SHRINK);
-    m_main_info_textfield_box->pack_start(*m_binomial_name_entry, Gtk::PACK_SHRINK);
-    m_main_info_textfield_box->pack_start(*m_description_textfield, Gtk::PACK_EXPAND_WIDGET);
-
-    m_main_info_box->pack_start(*m_main_info_label_box, Gtk::PACK_SHRINK);
-    m_main_info_box->pack_start(*m_main_info_textfield_box, Gtk::PACK_SHRINK);
+    m_main_info_grid->attach(*m_name_label,0,0,1,1);
+    m_main_info_grid->attach(*m_binomial_name_label,0,1,1,1);
+    m_main_info_grid->attach(*m_name_entry,1,0,1,1);
+    m_main_info_grid->attach(*m_binomial_name_entry,1,1,1,1);
 
     m_description_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+
+    m_description_box->pack_start(*m_description_textfield, Gtk::PACK_EXPAND_WIDGET);
+
     m_dates_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
     m_stock_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
     m_pictures_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
@@ -76,7 +72,7 @@ void SeedAddWindow::create_gui(){
     m_delete_button = Gtk::manage(new Gtk::ToolButton("Delete"));
     m_delete_button->set_icon_name("edit-delete");
 
-    m_notebook->append_page(*m_main_info_box, "Main Info");
+    m_notebook->append_page(*m_main_info_grid, "Main Info");
     m_notebook->append_page(*m_description_box, "Description");
     m_notebook->append_page(*m_dates_box, "Dates");
     m_notebook->append_page(*m_stock_box, "Stock");
