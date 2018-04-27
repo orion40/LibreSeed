@@ -149,6 +149,7 @@ bool Model::create_db(){
 
 bool Model::save_content(){
     bool result = true;
+    // TODO: handle this properly
     for (std::list<Seed*>::iterator it = m_seeds.begin(); it != m_seeds.end(); it++){
         result = (*it)->save_to_db(m_db);
     }
