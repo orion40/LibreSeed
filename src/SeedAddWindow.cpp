@@ -5,6 +5,7 @@ SeedAddWindow::SeedAddWindow(){
 }
 
 SeedAddWindow::SeedAddWindow(Controller* controller, Glib::RefPtr<Gtk::ListStore> seed_model, SeedColumnsModel* columns){
+    m_seed = NULL;
     m_controller = controller;
     m_seed_tree_model = seed_model;
     m_seed_columns = columns;
@@ -45,17 +46,19 @@ void SeedAddWindow::create_gui(){
     m_main_info_box->pack_start(*m_main_info_label_box, Gtk::PACK_SHRINK);
     m_main_info_box->pack_start(*m_main_info_textfield_box, Gtk::PACK_SHRINK);
 
-    m_pictures_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+    m_description_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
     m_dates_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+    m_stock_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+    m_pictures_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
     m_edit_toolbar = Gtk::manage(new Gtk::Toolbar());
     m_save_button = Gtk::manage(new Gtk::ToolButton("Save"));
     m_delete_button = Gtk::manage(new Gtk::ToolButton("Delete"));
 
     m_notebook->append_page(*m_main_info_box, "Main Info");
-    m_notebook->append_page(*m_main_info_box, "Description");
+    m_notebook->append_page(*m_description_box, "Description");
     m_notebook->append_page(*m_dates_box, "Dates");
-    m_notebook->append_page(*m_dates_box, "Stock");
+    m_notebook->append_page(*m_stock_box, "Stock");
     m_notebook->append_page(*m_pictures_box, "Pictures");
 
     m_edit_toolbar->append(*m_save_button);
@@ -113,20 +116,26 @@ bool SeedAddWindow::on_key_press_event(GdkEventKey* key_event){
 }
 
 void SeedAddWindow::save_seed(){
-    Seed* seed = new Seed();
-    seed->set_name(m_name_entry->get_buffer()->get_text());
-    seed->set_binomial_nomenclature(m_binomial_name_entry->get_buffer()->get_text());
-    seed->set_description(m_description_textfield->get_buffer()->get_text());
-    seed->print_seed();
+    m_seed_tree_model->clear();
+    if (m_seed == NULL){
+        m_seed = new Seed();
+        m_controller->get_model()->add_seed(m_seed);
+    }
+    m_seed->set_name(m_name_entry->get_buffer()->get_text());
+    m_seed->set_binomial_nomenclature(m_binomial_name_entry->get_buffer()->get_text());
+    m_seed->set_description(m_description_textfield->get_buffer()->get_text());
+    m_seed->print_seed();
 
-    m_controller->get_model()->add_seed(seed);
     m_controller->get_model()->save_content();
 
     // Update MainWindow display, is there a better way to do it ?
     // Via a callback or something ?
-    Gtk::ListStore::Row row = *(m_seed_tree_model->append());
-    row[m_seed_columns->m_seed_id] = seed->get_id();
-    row[m_seed_columns->m_seed_name] = seed->get_name();
-    row[m_seed_columns->m_seed_binomial_nomenclature] = seed->get_binomial_nomenclature();
-    row[m_seed_columns->m_seed_description] = seed->get_description();
+    std::list<Seed*> seeds = m_controller->get_model()->get_seeds();
+    for (std::list<Seed*>::iterator it = seeds.begin(); it != seeds.end(); it++){
+        Gtk::ListStore::Row row = *(m_seed_tree_model->append());
+        row[m_seed_columns->m_seed_id] = (*it)->get_id();
+        row[m_seed_columns->m_seed_name] = (*it)->get_name();
+        row[m_seed_columns->m_seed_binomial_nomenclature] = (*it)->get_binomial_nomenclature();
+        row[m_seed_columns->m_seed_description] = (*it)->get_description();
+    }
 }
