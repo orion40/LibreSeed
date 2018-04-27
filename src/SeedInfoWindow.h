@@ -50,8 +50,10 @@ class SeedInfoWindow : public Gtk::Window{
         Gtk::Label* m_description_label;
         Gtk::TextView* m_description_textfield;
 
-        Gtk::Box* m_pictures_box;
+        Gtk::Box* m_description_box;
         Gtk::Box* m_dates_box;
+        Gtk::Box* m_stock_box;
+        Gtk::Box* m_pictures_box;
 
         Gtk::Toolbar* m_edit_toolbar;
         Gtk::ToolButton* m_save_button;

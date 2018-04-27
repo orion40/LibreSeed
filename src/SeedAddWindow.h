@@ -50,8 +50,10 @@ class SeedAddWindow : public Gtk::Window{
         Gtk::Label* m_description_label;
         Gtk::TextView* m_description_textfield;
 
-        Gtk::Box* m_pictures_box;
+        Gtk::Box* m_description_box;
         Gtk::Box* m_dates_box;
+        Gtk::Box* m_stock_box;
+        Gtk::Box* m_pictures_box;
 
         Gtk::Toolbar* m_edit_toolbar;
         Gtk::ToolButton* m_save_button;
@@ -60,6 +62,9 @@ class SeedAddWindow : public Gtk::Window{
         // MainWindow ListStore model
         Glib::RefPtr<Gtk::ListStore> m_seed_tree_model;
         SeedColumnsModel* m_seed_columns;
+
+        // Current seed
+        Seed* m_seed;
 };
 
 #endif
