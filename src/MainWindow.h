@@ -82,7 +82,6 @@ class MainWindow : public Gtk::Window {
 
         // Child windows
         SeedAddWindow* m_seed_add_window;
-        SeedInfoWindow* m_seed_info_window;
 
         // AccelGroups for kb shortcuts
         Gtk::AccelGroup* actions;

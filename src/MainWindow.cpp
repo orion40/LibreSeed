@@ -2,7 +2,6 @@
 
 MainWindow::MainWindow(){
     m_seed_add_window = NULL;
-    m_seed_info_window = NULL;
 }
 
 

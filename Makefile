@@ -16,7 +16,7 @@ all: $(OUT_DIR) $(OUT_DIR)/$(TARGET)
 $(OUT_DIR):
 	mkdir -p $@
 
-$(OUT_DIR)/$(TARGET): $(OUT_DIR)/main.o $(OUT_DIR)/Controller.o $(OUT_DIR)/SeedAddWindow.o $(OUT_DIR)/Seed.o $(OUT_DIR)/MainWindow.o $(OUT_DIR)/SeedColumnsModel.o $(OUT_DIR)/Model.o $(OUT_DIR)/SeedInfoWindow.o
+$(OUT_DIR)/$(TARGET): $(OUT_DIR)/main.o $(OUT_DIR)/Controller.o $(OUT_DIR)/SeedAddWindow.o $(OUT_DIR)/Seed.o $(OUT_DIR)/MainWindow.o $(OUT_DIR)/SeedColumnsModel.o $(OUT_DIR)/Model.o
 	$(CC) $^ $(GTKMM3_LIB) $(SQLITE3_LIB) $(GLIBMM_LIB) $(CPPFLAGS) $(LDFLAGS) -o $@
 
 $(OUT_DIR)/main.o: $(IN_DIR)/main.cpp
@@ -38,9 +38,6 @@ $(OUT_DIR)/SeedColumnsModel.o: $(IN_DIR)/SeedColumnsModel.cpp
 	$(CC) $(CPPFLAGS) $^ -c -o $@ $(GTKMM3_LIB)
 
 $(OUT_DIR)/SeedAddWindow.o: $(IN_DIR)/SeedAddWindow.cpp
-	$(CC) $(CPPFLAGS) $^ $(GTKMM3_LIB) -c -o $@
-
-$(OUT_DIR)/SeedInfoWindow.o: $(IN_DIR)/SeedInfoWindow.cpp
 	$(CC) $(CPPFLAGS) $^ $(GTKMM3_LIB) -c -o $@
 
 clean:
