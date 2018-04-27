@@ -43,18 +43,20 @@ void SeedInfoWindow::create_gui(){
     m_main_info_textfield_box->pack_start(*m_description_textfield, Gtk::PACK_EXPAND_WIDGET);
 
     m_main_info_box->pack_start(*m_main_info_label_box, Gtk::PACK_SHRINK);
-    m_main_info_box->pack_start(*m_main_info_textfield_box, Gtk::PACK_SHRINK);
+    m_description_box->pack_start(*m_main_info_textfield_box, Gtk::PACK_SHRINK);
 
-    m_pictures_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+    m_description_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
     m_dates_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+    m_stock_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+    m_pictures_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
     m_edit_toolbar = Gtk::manage(new Gtk::Toolbar());
     m_save_button = Gtk::manage(new Gtk::ToolButton("Save"));
 
     m_notebook->append_page(*m_main_info_box, "Main Info");
-    m_notebook->append_page(*m_main_info_box, "Description");
+    m_notebook->append_page(*m_description_box, "Description");
     m_notebook->append_page(*m_dates_box, "Dates");
-    m_notebook->append_page(*m_dates_box, "Stock");
+    m_notebook->append_page(*m_stock_box, "Stock");
     m_notebook->append_page(*m_pictures_box, "Pictures");
 
     m_edit_toolbar->append(*m_save_button);
