@@ -19,20 +19,20 @@ SeedInfoWindow::~SeedInfoWindow(){
 }
 
 void SeedInfoWindow::create_gui(){
-    m_main_box = new Gtk::Box(Gtk::ORIENTATION_VERTICAL);
-    m_notebook = new Gtk::Notebook();
+    m_main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+    m_notebook = Gtk::manage(new Gtk::Notebook());
     m_notebook->set_tab_pos(Gtk::POS_LEFT);
 
-    m_main_info_box = new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL);
-    m_main_info_label_box = new Gtk::Box(Gtk::ORIENTATION_VERTICAL);
-    m_main_info_textfield_box = new Gtk::Box(Gtk::ORIENTATION_VERTICAL);
+    m_main_info_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
+    m_main_info_label_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+    m_main_info_textfield_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
-    m_name_label = new Gtk::Label("Name");
-    m_name_entry = new Gtk::Entry();
-    m_binomial_name_label = new Gtk::Label("Binomial nomenclature");
-    m_binomial_name_entry = new Gtk::Entry();
-    m_description_label = new Gtk::Label("Description");
-    m_description_textfield = new Gtk::TextView();
+    m_name_label = Gtk::manage(Gtk::manage(new Gtk::Label("Name"));
+    m_name_entry = Gtk::manage(new Gtk::Entry());
+    m_binomial_name_label = Gtk::manage(new Gtk::Label("Binomial nomenclature"));
+    m_binomial_name_entry = Gtk::manage(new Gtk::Entry());
+    m_description_label = Gtk::manage(new Gtk::Label("Description"));
+    m_description_textfield = Gtk::manage(new Gtk::TextView());
 
     m_main_info_label_box->pack_start(*m_name_label, Gtk::PACK_SHRINK);
     m_main_info_label_box->pack_start(*m_binomial_name_label, Gtk::PACK_SHRINK);
@@ -45,15 +45,17 @@ void SeedInfoWindow::create_gui(){
     m_main_info_box->pack_start(*m_main_info_label_box, Gtk::PACK_SHRINK);
     m_main_info_box->pack_start(*m_main_info_textfield_box, Gtk::PACK_SHRINK);
 
-    m_pictures_box = new Gtk::Box(Gtk::ORIENTATION_VERTICAL);
-    m_dates_box = new Gtk::Box(Gtk::ORIENTATION_VERTICAL);
+    m_pictures_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+    m_dates_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
-    m_edit_toolbar = new Gtk::Toolbar();
-    m_save_button = new Gtk::ToolButton("Save");
+    m_edit_toolbar = Gtk::manage(new Gtk::Toolbar());
+    m_save_button = Gtk::manage(new Gtk::ToolButton("Save"));
 
     m_notebook->append_page(*m_main_info_box, "Main Info");
-    m_notebook->append_page(*m_pictures_box, "Pictures");
+    m_notebook->append_page(*m_main_info_box, "Description");
     m_notebook->append_page(*m_dates_box, "Dates");
+    m_notebook->append_page(*m_dates_box, "Stock");
+    m_notebook->append_page(*m_pictures_box, "Pictures");
 
     m_edit_toolbar->append(*m_save_button);
 

@@ -53,8 +53,10 @@ void SeedAddWindow::create_gui(){
     m_delete_button = Gtk::manage(new Gtk::ToolButton("Delete"));
 
     m_notebook->append_page(*m_main_info_box, "Main Info");
-    m_notebook->append_page(*m_pictures_box, "Pictures");
+    m_notebook->append_page(*m_main_info_box, "Description");
     m_notebook->append_page(*m_dates_box, "Dates");
+    m_notebook->append_page(*m_dates_box, "Stock");
+    m_notebook->append_page(*m_pictures_box, "Pictures");
 
     m_edit_toolbar->append(*m_save_button);
     m_edit_toolbar->append(*m_delete_button);
