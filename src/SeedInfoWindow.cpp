@@ -27,7 +27,7 @@ void SeedInfoWindow::create_gui(){
     m_main_info_label_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
     m_main_info_textfield_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
-    m_name_label = Gtk::manage(Gtk::manage(new Gtk::Label("Name"));
+    m_name_label = Gtk::manage(new Gtk::Label("Name"));
     m_name_entry = Gtk::manage(new Gtk::Entry());
     m_binomial_name_label = Gtk::manage(new Gtk::Label("Binomial nomenclature"));
     m_binomial_name_entry = Gtk::manage(new Gtk::Entry());
