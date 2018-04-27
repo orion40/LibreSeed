@@ -20,7 +20,9 @@ class SeedAddWindow : public Gtk::Window{
     public:
         SeedAddWindow();
         SeedAddWindow(Controller* controller, Glib::RefPtr<Gtk::ListStore> seed_model, SeedColumnsModel* columns);
+        SeedAddWindow(Controller* controller, Glib::RefPtr<Gtk::ListStore> seed_model, SeedColumnsModel* columns, Seed* seed);
         ~SeedAddWindow();
+
 
     private:
         void create_gui();
@@ -34,6 +36,8 @@ class SeedAddWindow : public Gtk::Window{
         bool on_key_press_event(GdkEventKey* event) override;
 
         void save_seed();
+
+        void fill_gui();
 
         Controller* m_controller;
 

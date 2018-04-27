@@ -1,5 +1,8 @@
 #include "SeedAddWindow.h"
 
+// TODO: faire un bouton pour ajouter d'autre graines ?
+// un new qui vide tout les champs et crée une nouvelle graine
+
 SeedAddWindow::SeedAddWindow(){
 
 }
@@ -10,6 +13,21 @@ SeedAddWindow::SeedAddWindow(Controller* controller, Glib::RefPtr<Gtk::ListStore
     m_seed_tree_model = seed_model;
     m_seed_columns = columns;
     create_gui();
+    set_title("Add a new seed");
+    set_icon_name("document-new");
+    connect_signals();
+}
+
+SeedAddWindow::SeedAddWindow(Controller* controller, Glib::RefPtr<Gtk::ListStore> seed_model, SeedColumnsModel* columns, Seed* seed){
+    m_seed = seed;
+    m_controller = controller;
+    m_seed_tree_model = seed_model;
+    m_seed_columns = columns;
+    create_gui();
+    set_title("Edit a seed");
+    set_icon_name("document-open");
+    connect_signals();
+    fill_gui();
     connect_signals();
 }
 
@@ -34,6 +52,7 @@ void SeedAddWindow::create_gui(){
     // TODO: a mettre dans un onglet à part ?
     m_description_label = Gtk::manage(new Gtk::Label("Description"));
     m_description_textfield = Gtk::manage(Gtk::manage(new Gtk::TextView()));
+    m_description_textfield->set_wrap_mode(Gtk::WRAP_WORD_CHAR);
 
     m_main_info_label_box->pack_start(*m_name_label, Gtk::PACK_SHRINK);
     m_main_info_label_box->pack_start(*m_binomial_name_label, Gtk::PACK_SHRINK);
@@ -53,7 +72,9 @@ void SeedAddWindow::create_gui(){
 
     m_edit_toolbar = Gtk::manage(new Gtk::Toolbar());
     m_save_button = Gtk::manage(new Gtk::ToolButton("Save"));
+    m_save_button->set_icon_name("document-save");
     m_delete_button = Gtk::manage(new Gtk::ToolButton("Delete"));
+    m_delete_button->set_icon_name("edit-delete");
 
     m_notebook->append_page(*m_main_info_box, "Main Info");
     m_notebook->append_page(*m_description_box, "Description");
@@ -74,7 +95,6 @@ void SeedAddWindow::create_gui(){
     m_name_entry->grab_focus();
 
     set_default_size(400,400);
-    set_title("Add a new seed");
 }
 
 void SeedAddWindow::connect_signals(){
@@ -138,4 +158,10 @@ void SeedAddWindow::save_seed(){
         row[m_seed_columns->m_seed_binomial_nomenclature] = (*it)->get_binomial_nomenclature();
         row[m_seed_columns->m_seed_description] = (*it)->get_description();
     }
+}
+
+void SeedAddWindow::fill_gui(){
+    m_name_entry->set_text(m_seed->get_name());
+    m_binomial_name_entry->set_text(m_seed->get_binomial_nomenclature());
+    m_description_textfield->get_buffer()->set_text(m_seed->get_description());
 }
