@@ -45,6 +45,8 @@ class MainWindow : public Gtk::Window {
         void delete_selected_seed();
         void open_add_seed_window();
 
+        void display_seed_selection_needed();
+
         void on_list_store_row_activated(const Gtk::TreeModel::Path&, Gtk::TreeViewColumn* column);
 
         void open_seed_info(Seed* s);
@@ -66,7 +68,6 @@ class MainWindow : public Gtk::Window {
         Gtk::SearchBar* m_search_bar;
 
         // Menus
-
 
         Gtk::Toolbar* m_management_toolbar;
         Gtk::ToolButton* m_add_button;

@@ -152,13 +152,7 @@ void MainWindow::on_open_seed_info_button_clicked(){
         std::cout << "Row selected: ID=" << row[m_seed_columns.m_seed_id] << ", Name="             << row[m_seed_columns.m_seed_name] << std::endl;
         open_seed_info(m_controller->get_model()->getSeedById(row[m_seed_columns.m_seed_id]));
     } else {
-        Gtk::MessageDialog dialog(*this, 
-                "Please select a seed first.",
-                false,
-                Gtk::MESSAGE_ERROR,
-                Gtk::BUTTONS_OK);
-        dialog.set_icon_name("dialog-error");
-        dialog.run();
+        display_seed_selection_needed();
     }
 }
 
@@ -206,13 +200,7 @@ void MainWindow::delete_selected_seed(){
                 }
         }
     } else {
-        Gtk::MessageDialog dialog(*this, 
-                "Please select a seed first.",
-                false,
-                Gtk::MESSAGE_ERROR,
-                Gtk::BUTTONS_OK);
-        dialog.set_icon_name("dialog-error");
-        dialog.run();
+        display_seed_selection_needed();
     }
 }
 
@@ -250,4 +238,14 @@ void MainWindow::open_seed_info(Seed* s){
         }
         m_seed_info_window->show();
     }
+}
+
+void MainWindow::display_seed_selection_needed(){
+    Gtk::MessageDialog dialog(*this, 
+            "Please select a seed first.",
+            false,
+            Gtk::MESSAGE_ERROR,
+            Gtk::BUTTONS_OK);
+    dialog.set_icon_name("dialog-error");
+    dialog.run();
 }
