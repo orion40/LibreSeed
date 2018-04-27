@@ -29,26 +29,26 @@ MainWindow::~MainWindow(){
 }
 
 void MainWindow::create_gui(){
-    m_main_box = new Gtk::Box(Gtk::ORIENTATION_VERTICAL);
-    m_control_box = new Gtk::Box(Gtk::ORIENTATION_VERTICAL);
-    m_search_bar = new Gtk::SearchBar();
+    m_main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+    m_control_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+    m_search_bar = Gtk::manage(new Gtk::SearchBar());
 
-    m_management_toolbar = new Gtk::Toolbar();
-    m_add_button = new Gtk::ToolButton("Add");
+    m_management_toolbar = Gtk::manage(new Gtk::Toolbar());
+    m_add_button = Gtk::manage(new Gtk::ToolButton("Add"));
     m_add_button->set_icon_name("document-new");
     //m_add_button->set_icon_widget(Gtk::Stock::ADD);
-    m_delete_button = new Gtk::ToolButton("Delete");
+    m_delete_button = Gtk::manage(new Gtk::ToolButton("Delete"));
     m_delete_button->set_icon_name("edit-delete");
-    m_open_seed_info_button = new Gtk::ToolButton("Open Seed card");
+    m_open_seed_info_button = Gtk::manage(new Gtk::ToolButton("Open Seed card"));
     m_open_seed_info_button->set_icon_name("document-open");
-    m_print_button = new Gtk::ToolButton("Print");
+    m_print_button = Gtk::manage(new Gtk::ToolButton("Print"));
     m_print_button->set_icon_name("document-print");
 
-    m_tree_view_scrolled_window = new Gtk::ScrolledWindow();
+    m_tree_view_scrolled_window = Gtk::manage(new Gtk::ScrolledWindow());
     m_tree_view_scrolled_window->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
-    m_seed_list_store = new Gtk::TreeView();
-    m_search_text_view = new Gtk::SearchEntry();
+    m_seed_list_store = Gtk::manage(new Gtk::TreeView());
+    m_search_text_view = Gtk::manage(new Gtk::SearchEntry());
 
     // Add buttons to toolbar
     m_management_toolbar->append(*m_add_button);
@@ -230,20 +230,7 @@ void MainWindow::fill_tree_store(){
 }
 
 void MainWindow::destroy_gui(){
-    delete m_main_box;
-    delete m_control_box;
-    delete m_search_bar;
 
-    delete m_management_toolbar;
-    delete m_add_button;
-    delete m_delete_button;
-    delete m_open_seed_info_button;
-    delete m_print_button;
-
-    delete m_tree_view_scrolled_window;
-
-    delete m_seed_list_store;
-    delete m_search_text_view;
 }
 
 void MainWindow::on_list_store_row_activated(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column)
