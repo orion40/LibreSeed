@@ -84,18 +84,27 @@ void MainWindow::create_gui(){
 
     m_seed_list_store->append_column("ID", m_seed_columns.m_seed_id);
     m_seed_list_store->get_column(0)->set_sort_column(m_seed_columns.m_seed_id);
+    m_seed_list_store->get_column(0)->set_resizable(true);
 
     m_seed_list_store->append_column("Plant Name", m_seed_columns.m_seed_plant_name);
     m_seed_list_store->get_column(1)->set_sort_column(m_seed_columns.m_seed_plant_name);
+    m_seed_list_store->get_column(1)->set_resizable(true);
+
 
     m_seed_list_store->append_column("Plant Variety", m_seed_columns.m_seed_variety_name);
     m_seed_list_store->get_column(2)->set_sort_column(m_seed_columns.m_seed_variety_name);
+    m_seed_list_store->get_column(2)->set_resizable(true);
+
 
     m_seed_list_store->append_column("Binomial Nomenclature", m_seed_columns.m_seed_binomial_nomenclature);
     m_seed_list_store->get_column(3)->set_sort_column(m_seed_columns.m_seed_binomial_nomenclature);
+    m_seed_list_store->get_column(3)->set_resizable(true);
+
     
     m_seed_list_store->append_column("Description", m_seed_columns.m_seed_description);
     m_seed_list_store->get_column(4)->set_sort_column(m_seed_columns.m_seed_description);
+    m_seed_list_store->get_column(4)->set_resizable(true);
+
 
 
 
