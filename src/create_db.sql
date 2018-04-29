@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS Seed (
     seed_id INTEGER NOT NULL,
-    seed_name TEXT,
+    seed_plant_name TEXT,
+    seed_variety_name TEXT,
     seed_binomial_name TEXT,
     seed_description TEXT,
     CONSTRAINT Seed_PK PRIMARY KEY (seed_id)

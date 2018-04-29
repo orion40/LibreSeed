@@ -46,8 +46,10 @@ class SeedAddWindow : public Gtk::Window{
         Gtk::Notebook* m_notebook;
 
         Gtk::Grid* m_main_info_grid;
-        Gtk::Label* m_name_label;
-        Gtk::Entry* m_name_entry;
+        Gtk::Label* m_plant_name_label;
+        Gtk::Entry* m_plant_name_entry;
+        Gtk::Label* m_variety_name_label;
+        Gtk::Entry* m_variety_name_entry;
         Gtk::Label* m_binomial_name_label;
         Gtk::Entry* m_binomial_name_entry;
 

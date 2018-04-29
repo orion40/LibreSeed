@@ -49,18 +49,22 @@ void SeedAddWindow::create_gui(){
 
     m_main_info_grid = Gtk::manage(new Gtk::Grid());
 
-    m_name_label = Gtk::manage(new Gtk::Label("Name"));
-    m_name_entry = Gtk::manage(new Gtk::Entry());
+    m_plant_name_label = Gtk::manage(new Gtk::Label("Plant Name"));
+    m_plant_name_entry = Gtk::manage(new Gtk::Entry());
+    m_variety_name_label = Gtk::manage(new Gtk::Label("Variety Name"));
+    m_variety_name_entry = Gtk::manage(new Gtk::Entry());
     m_binomial_name_label = Gtk::manage(new Gtk::Label("Binomial nomenclature"));
     m_binomial_name_entry = Gtk::manage(new Gtk::Entry());
     // TODO: a mettre dans un onglet à part ?
     m_description_textfield = Gtk::manage(Gtk::manage(new Gtk::TextView()));
     m_description_textfield->set_wrap_mode(Gtk::WRAP_WORD_CHAR);
 
-    m_main_info_grid->attach(*m_name_label,0,0,1,1);
-    m_main_info_grid->attach(*m_binomial_name_label,0,1,1,1);
-    m_main_info_grid->attach(*m_name_entry,1,0,1,1);
-    m_main_info_grid->attach(*m_binomial_name_entry,1,1,1,1);
+    m_main_info_grid->attach(*m_plant_name_label,0,0,1,1);
+    m_main_info_grid->attach(*m_variety_name_label,0,1,1,1);
+    m_main_info_grid->attach(*m_binomial_name_label,0,2,1,1);
+    m_main_info_grid->attach(*m_plant_name_entry,1,0,1,1);
+    m_main_info_grid->attach(*m_variety_name_entry,1,1,1,1);
+    m_main_info_grid->attach(*m_binomial_name_entry,1,2,1,1);
 
     m_description_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
@@ -91,7 +95,7 @@ void SeedAddWindow::create_gui(){
 
     show_all_children();
 
-    m_name_entry->grab_focus();
+    m_plant_name_entry->grab_focus();
 
     set_default_size(400,400);
 }
@@ -140,7 +144,8 @@ void SeedAddWindow::save_seed(){
         m_seed = new Seed();
         m_controller->get_model()->add_seed(m_seed);
     }
-    m_seed->set_name(m_name_entry->get_buffer()->get_text());
+    m_seed->set_plant_name(m_plant_name_entry->get_buffer()->get_text());
+    m_seed->set_variety_name(m_variety_name_entry->get_buffer()->get_text());
     m_seed->set_binomial_nomenclature(m_binomial_name_entry->get_buffer()->get_text());
     m_seed->set_description(m_description_textfield->get_buffer()->get_text());
     m_seed->print_seed();
@@ -148,12 +153,14 @@ void SeedAddWindow::save_seed(){
     m_controller->get_model()->save_content();
 
     // Update MainWindow display, is there a better way to do it ?
-    // Via a callback or something ?
+    // Via a callback or something ? VIA A PROPERTY !
+    // TODO: add property on model so automatic updates !
     std::list<Seed*> seeds = m_controller->get_model()->get_seeds();
     for (std::list<Seed*>::iterator it = seeds.begin(); it != seeds.end(); it++){
         Gtk::ListStore::Row row = *(m_seed_tree_model->append());
         row[m_seed_columns->m_seed_id] = (*it)->get_id();
-        row[m_seed_columns->m_seed_name] = (*it)->get_name();
+        row[m_seed_columns->m_seed_plant_name] = (*it)->get_plant_name();
+        row[m_seed_columns->m_seed_variety_name] = (*it)->get_variety_name();
         row[m_seed_columns->m_seed_binomial_nomenclature] = (*it)->get_binomial_nomenclature();
         row[m_seed_columns->m_seed_description] = (*it)->get_description();
     }
@@ -162,7 +169,8 @@ void SeedAddWindow::save_seed(){
 }
 
 void SeedAddWindow::fill_gui(){
-    m_name_entry->set_text(m_seed->get_name());
+    m_plant_name_entry->set_text(m_seed->get_plant_name());
+    m_variety_name_entry->set_text(m_seed->get_variety_name());
     m_binomial_name_entry->set_text(m_seed->get_binomial_nomenclature());
     m_description_textfield->get_buffer()->set_text(m_seed->get_description());
 }

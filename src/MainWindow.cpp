@@ -85,14 +85,17 @@ void MainWindow::create_gui(){
     m_seed_list_store->append_column("ID", m_seed_columns.m_seed_id);
     m_seed_list_store->get_column(0)->set_sort_column(m_seed_columns.m_seed_id);
 
-    m_seed_list_store->append_column("Name", m_seed_columns.m_seed_name);
-    m_seed_list_store->get_column(1)->set_sort_column(m_seed_columns.m_seed_name);
+    m_seed_list_store->append_column("Plant Name", m_seed_columns.m_seed_plant_name);
+    m_seed_list_store->get_column(1)->set_sort_column(m_seed_columns.m_seed_plant_name);
+
+    m_seed_list_store->append_column("Plant Variety", m_seed_columns.m_seed_variety_name);
+    m_seed_list_store->get_column(2)->set_sort_column(m_seed_columns.m_seed_variety_name);
 
     m_seed_list_store->append_column("Binomial Nomenclature", m_seed_columns.m_seed_binomial_nomenclature);
-    m_seed_list_store->get_column(2)->set_sort_column(m_seed_columns.m_seed_binomial_nomenclature);
+    m_seed_list_store->get_column(3)->set_sort_column(m_seed_columns.m_seed_binomial_nomenclature);
     
     m_seed_list_store->append_column("Description", m_seed_columns.m_seed_description);
-    m_seed_list_store->get_column(3)->set_sort_column(m_seed_columns.m_seed_description);
+    m_seed_list_store->get_column(4)->set_sort_column(m_seed_columns.m_seed_description);
 
 
 
@@ -166,7 +169,7 @@ void MainWindow::on_open_seed_info_button_clicked(){
     {
         Gtk::TreeModel::Row row = *iter;
         //Do something with the row.
-        std::cout << "Row selected: ID=" << row[m_seed_columns.m_seed_id] << ", Name="             << row[m_seed_columns.m_seed_name] << std::endl;
+        std::cout << "Row selected: ID=" << row[m_seed_columns.m_seed_id] << ", Name="             << row[m_seed_columns.m_seed_plant_name] << std::endl;
         open_seed_info(m_controller->get_model()->getSeedById(row[m_seed_columns.m_seed_id]));
     } else {
         display_seed_selection_needed();
@@ -184,7 +187,7 @@ void MainWindow::delete_selected_seed(){
         Gtk::TreeModel::Row row = *iter;
         std::cout << "Selected: ";
         std::cout << row[m_seed_columns.m_seed_id] << " - ";
-        std::cout << row[m_seed_columns.m_seed_name] << " - ";
+        std::cout << row[m_seed_columns.m_seed_plant_name] << " - ";
         std::cout << row[m_seed_columns.m_seed_binomial_nomenclature] << " - ";
         std::cout << row[m_seed_columns.m_seed_description] << "\n";
 
@@ -227,7 +230,8 @@ void MainWindow::fill_tree_store(){
     for (std::list<Seed*>::iterator it = seeds.begin(); it != seeds.end(); it++){
         Gtk::ListStore::Row row = *(m_seed_tree_model->append());
         row[m_seed_columns.m_seed_id] = (*it)->get_id();
-        row[m_seed_columns.m_seed_name] = (*it)->get_name();
+        row[m_seed_columns.m_seed_plant_name] = (*it)->get_plant_name();
+        row[m_seed_columns.m_seed_variety_name] = (*it)->get_variety_name();
         row[m_seed_columns.m_seed_binomial_nomenclature] = (*it)->get_binomial_nomenclature();
         row[m_seed_columns.m_seed_description] = (*it)->get_description();
     }
@@ -243,7 +247,7 @@ void MainWindow::on_list_store_row_activated(const Gtk::TreeModel::Path& path, G
     if(iter)
     {
         Gtk::TreeModel::Row row = *iter;
-        std::cout << "Row activated: ID=" << row[m_seed_columns.m_seed_id] << ", Name="             << row[m_seed_columns.m_seed_name] << std::endl;
+        std::cout << "Row activated: ID=" << row[m_seed_columns.m_seed_id] << ", Name="             << row[m_seed_columns.m_seed_plant_name] << std::endl;
         open_seed_info(m_controller->get_model()->getSeedById(row[m_seed_columns.m_seed_id]));
     }
 }
