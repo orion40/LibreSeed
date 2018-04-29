@@ -37,13 +37,17 @@ SeedAddWindow::~SeedAddWindow(){
 
 void SeedAddWindow::create_gui(){
     m_main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+
+    m_edit_toolbar = Gtk::manage(new Gtk::Toolbar());
+    m_save_button = Gtk::manage(new Gtk::ToolButton("Save"));
+    m_save_button->set_icon_name("document-save");
+    m_delete_button = Gtk::manage(new Gtk::ToolButton("Delete"));
+    m_delete_button->set_icon_name("edit-delete");
+
     m_notebook = Gtk::manage(new Gtk::Notebook());
     m_notebook->set_tab_pos(Gtk::POS_LEFT);
 
     m_main_info_grid = Gtk::manage(new Gtk::Grid());
-    // TODO: grid instead of vbox
-    //m_main_info_label_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-    m_main_info_textfield_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
     m_name_label = Gtk::manage(new Gtk::Label("Name"));
     m_name_entry = Gtk::manage(new Gtk::Entry());
@@ -63,14 +67,13 @@ void SeedAddWindow::create_gui(){
     m_description_box->pack_start(*m_description_textfield, Gtk::PACK_EXPAND_WIDGET);
 
     m_dates_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+
+    // How to add a Date ? Already here but empty
+    // for int i = 0; i < MAX_DATES; i++
+    //      create DateWidget
+
     m_stock_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
     m_pictures_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-
-    m_edit_toolbar = Gtk::manage(new Gtk::Toolbar());
-    m_save_button = Gtk::manage(new Gtk::ToolButton("Save"));
-    m_save_button->set_icon_name("document-save");
-    m_delete_button = Gtk::manage(new Gtk::ToolButton("Delete"));
-    m_delete_button->set_icon_name("edit-delete");
 
     m_notebook->append_page(*m_main_info_grid, "Main Info");
     m_notebook->append_page(*m_description_box, "Description");
@@ -154,6 +157,8 @@ void SeedAddWindow::save_seed(){
         row[m_seed_columns->m_seed_binomial_nomenclature] = (*it)->get_binomial_nomenclature();
         row[m_seed_columns->m_seed_description] = (*it)->get_description();
     }
+
+    //hide();
 }
 
 void SeedAddWindow::fill_gui(){
