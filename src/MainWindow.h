@@ -34,6 +34,7 @@ class MainWindow : public Gtk::Window {
     private:
         void create_gui();
         void connect_signals();
+        void init_gui();
         void fill_tree_store();
         void destroy_gui();
 
@@ -47,6 +48,7 @@ class MainWindow : public Gtk::Window {
         void display_seed_selection_needed();
 
         void on_list_store_row_activated(const Gtk::TreeModel::Path&, Gtk::TreeViewColumn* column);
+        void on_list_store_selection_change();
 
         void open_seed_info(Seed* s);
 
@@ -70,9 +72,11 @@ class MainWindow : public Gtk::Window {
 
         Gtk::Toolbar* m_management_toolbar;
         Gtk::ToolButton* m_add_button;
-        Gtk::ToolButton* m_open_card_button;
         Gtk::ToolButton* m_delete_button;
         Gtk::ToolButton* m_open_seed_info_button;
+        Gtk::ToolButton* m_export_all_xml;
+        Gtk::ToolButton* m_export_selected_xml;
+        Gtk::ToolButton* m_import_xml;
         Gtk::ToolButton* m_print_button;
 
         Gtk::ScrolledWindow* m_tree_view_scrolled_window;

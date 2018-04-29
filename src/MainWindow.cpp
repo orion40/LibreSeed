@@ -10,6 +10,7 @@ MainWindow::MainWindow(Controller* controller): MainWindow(){
     if (m_controller->open_db()){
         // TODO: show_splashcreen
         create_gui();
+        init_gui();
         connect_signals();
         fill_tree_store();
     } else {
@@ -39,6 +40,10 @@ void MainWindow::create_gui(){
     m_delete_button->set_icon_name("edit-delete");
     m_open_seed_info_button = Gtk::manage(new Gtk::ToolButton("Open Seed card"));
     m_open_seed_info_button->set_icon_name("document-open");
+    // TODO : add icons
+    m_export_selected_xml = Gtk::manage(new Gtk::ToolButton("Export Selected"));
+    m_export_all_xml = Gtk::manage(new Gtk::ToolButton("Export All"));
+    m_import_xml = Gtk::manage(new Gtk::ToolButton("Import"));
     m_print_button = Gtk::manage(new Gtk::ToolButton("Print"));
     m_print_button->set_icon_name("document-print");
 
@@ -52,6 +57,11 @@ void MainWindow::create_gui(){
     m_management_toolbar->append(*m_add_button);
     m_management_toolbar->append(*m_delete_button);
     m_management_toolbar->append(*m_open_seed_info_button);
+
+    m_management_toolbar->append(*m_export_all_xml);
+    m_management_toolbar->append(*m_export_selected_xml);
+    m_management_toolbar->append(*m_import_xml);
+
     m_management_toolbar->append(*m_print_button);
 
     // Layout and graphic for "toolbar"
@@ -95,15 +105,23 @@ void MainWindow::create_gui(){
 
     m_seed_list_store->grab_focus();
 
-    set_default_size(500,500);
+    set_default_size(600,500);
     set_title("Seed Manager");
+}
+
+void MainWindow::init_gui(){
+    m_delete_button->set_sensitive(false);
+    m_open_seed_info_button->set_sensitive(false);
+    m_export_selected_xml->set_sensitive(false);
 }
 
 void MainWindow::connect_signals(){
     m_add_button->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_add_button_clicked));
     m_open_seed_info_button->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_open_seed_info_button_clicked));
     m_delete_button->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_delete_button_clicked));
+
     m_seed_list_store->signal_row_activated().connect(sigc::mem_fun(*this, &MainWindow::on_list_store_row_activated));
+    m_seed_list_store->get_selection()->signal_changed().connect(sigc::mem_fun(*this, &MainWindow::on_list_store_selection_change));
 }
 
 bool MainWindow::on_key_press_event(GdkEventKey* key_event){
@@ -250,4 +268,16 @@ void MainWindow::display_seed_selection_needed(){
             Gtk::BUTTONS_OK);
     dialog.set_icon_name("dialog-error");
     dialog.run();
+}
+
+void MainWindow::on_list_store_selection_change(){
+    if (m_seed_list_store->get_selection()->count_selected_rows() <= 0){
+        m_delete_button->set_sensitive(false);
+        m_open_seed_info_button->set_sensitive(false);
+        m_export_selected_xml->set_sensitive(false);
+    } else {
+        m_delete_button->set_sensitive(true);
+        m_open_seed_info_button->set_sensitive(true);
+        m_export_selected_xml->set_sensitive(true);
+    }
 }
