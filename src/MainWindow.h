@@ -5,6 +5,7 @@
 
 #include <gtkmm/box.h>
 #include <gtkmm/messagedialog.h>
+#include <gtkmm/filechooserdialog.h>
 #include <gtkmm/window.h>
 #include <gtkmm/buttonbox.h>
 #include <gtkmm/button.h>
@@ -19,6 +20,11 @@
 #include <gtkmm/searchbar.h>
 #include <gtkmm/searchentry.h>
 #include <gtkmm/accelgroup.h>
+#include <gtkmm/builder.h>
+#include <gtkmm/menubar.h>
+#include <gtkmm/aboutdialog.h>
+
+#include <giomm.h>
 
 #include "Controller.h"
 #include "SeedColumnsModel.h"
@@ -28,19 +34,29 @@
 class MainWindow : public Gtk::Window {
     public:
         MainWindow();
-        MainWindow(Controller* controller);
+        MainWindow(const Glib::RefPtr<Gtk::Application>& app, Controller* controller);
         ~MainWindow();
 
     private:
-        void create_gui();
+        void create_gui(const Glib::RefPtr<Gtk::Application>& app);
         void connect_signals();
         void init_gui();
         void fill_tree_store();
         void destroy_gui();
 
+        Model* get_model(){return m_controller->get_model();}
+
         void on_add_button_clicked();
         void on_open_seed_info_button_clicked();
         void on_delete_button_clicked();
+
+        void on_help_button_clicked();
+        void on_about_button_clicked();
+
+        std::string open_xml_dialog();
+        void on_export_all_xml_clicked();
+        void on_export_selected_xml_clicked();
+        void on_import_xml_clicked();
 
         void delete_selected_seed();
         void open_add_seed_window();
@@ -87,8 +103,14 @@ class MainWindow : public Gtk::Window {
         // Child windows
         SeedAddWindow* m_seed_add_window;
 
+        // Menu
+
+        Gtk::MenuBar* m_menu_bar;
+
         // AccelGroups for kb shortcuts
         Gtk::AccelGroup* actions;
+        Glib::RefPtr<Gtk::Builder> m_builder;
+        Glib::RefPtr<Gio::SimpleActionGroup> m_action_group;
 };
 
 #endif

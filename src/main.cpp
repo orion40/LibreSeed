@@ -9,7 +9,7 @@ int main(int argc, char** argv){
 
     Model* model = new Model("./seed.db");
     Controller* controller = new Controller(model);
-    MainWindow* main_window = new MainWindow(controller);
+    MainWindow* main_window = new MainWindow(app, controller);
     // TODO: connexion à la bdd
     // verifs si la co est ok
 

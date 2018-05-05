@@ -5,11 +5,11 @@ MainWindow::MainWindow(){
 }
 
 
-MainWindow::MainWindow(Controller* controller): MainWindow(){
+MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& app, Controller* controller): MainWindow(){
     m_controller = controller;
     if (m_controller->open_db()){
         // TODO: show_splashcreen
-        create_gui();
+        create_gui(app);
         init_gui();
         connect_signals();
         fill_tree_store();
@@ -28,10 +28,110 @@ MainWindow::~MainWindow(){
     destroy_gui();
 }
 
-void MainWindow::create_gui(){
+void MainWindow::create_gui(const Glib::RefPtr<Gtk::Application>& app){
+
+    m_action_group = Gio::SimpleActionGroup::create();
+    m_action_group->add_action("new",
+                sigc::mem_fun(*this, &MainWindow::on_add_button_clicked) );
+    m_action_group->add_action("open-selected",
+                sigc::mem_fun(*this, &MainWindow::on_open_seed_info_button_clicked) );
+    m_action_group->add_action("delete",
+                sigc::mem_fun(*this, &MainWindow::on_delete_button_clicked) );
+
+    m_action_group->add_action("help",
+                sigc::mem_fun(*this, &MainWindow::on_help_button_clicked) );
+    m_action_group->add_action("about",
+                sigc::mem_fun(*this, &MainWindow::on_about_button_clicked) );
+
+    insert_action_group("menu", m_action_group);
+
+    m_builder = Gtk::Builder::create();
+
+    //Layout the actions in a menubar and toolbar:
+    const char* ui_info =
+        "<interface>"
+        "  <menu id='menubar'>"
+        "    <submenu>"
+        "      <attribute name='label' translatable='yes'>_File</attribute>"
+        "      <section>"
+        "        <item>"
+        "          <attribute name='label' translatable='yes'>_New</attribute>"
+        "          <attribute name='action'>menu.new</attribute>"
+        "          <attribute name='accel'>&lt;Primary&gt;n</attribute>"
+        "        </item>"
+        "        <item>"
+        "          <attribute name='label' translatable='yes'>_Open Seed Info</attribute>"
+        "          <attribute name='action'>menu.open-selected</attribute>"
+        "          <attribute name='accel'>&lt;Primary&gt;o</attribute>"
+        "        </item>"
+        "      </section>"
+        "      <section>"
+        "        <item>"
+        "          <attribute name='label' translatable='yes'>_Delete</attribute>"
+        "          <attribute name='action'>menu.delete</attribute>"
+        //"          <attribute name='accel'>&lt;Primary&gt;n</attribute>"
+        "        </item>"
+        "      </section>"
+        "      <section>"
+        "        <item>"
+        "          <attribute name='label' translatable='yes'>_Quit</attribute>"
+        "          <attribute name='action'>menu.quit</attribute>"
+        "          <attribute name='accel'>&lt;Primary&gt;q</attribute>"
+        "        </item>"
+        "      </section>"
+        "    </submenu>"
+        "    <submenu>"
+        "      <attribute name='label' translatable='yes'>_Help</attribute>"
+        "      <item>"
+        "        <attribute name='label' translatable='yes'>_Help</attribute>"
+        "        <attribute name='action'>menu.help</attribute>"
+        "        <attribute name='accel'>F1</attribute>"
+        "      </item>"
+        "      <item>"
+        "        <attribute name='label' translatable='yes'>_About</attribute>"
+        "        <attribute name='action'>menu.about</attribute>"
+        "      </item>"
+        "    </submenu>"
+        "  </menu>"
+        "</interface>";
+
+    // When the menubar is a child of a Gtk::Window, keyboard accelerators are not
+    // automatically fetched from the Gio::Menu.
+    // See the menus/book/menus/main_menu menu for an alternative way of
+    // adding the menubar when using Gtk::ApplicationWindow.
+    // Gtk::Application::set_accel_for_action() is new in gtkmm 3.11.9.
+    app->set_accel_for_action("menu.new", "<Primary>n");
+    app->set_accel_for_action("menu.open-selected", "<Primary>o");
+    app->set_accel_for_action("menu.quit", "<Primary>q");
+    app->set_accel_for_action("menu.cut", "<Primary>x");
+    app->set_accel_for_action("menu.copy", "<Primary>c");
+    app->set_accel_for_action("menu.paste", "<Primary>v");
+
+    try
+    {
+        m_builder->add_from_string(ui_info);
+    }
+    catch(const Glib::Error& ex)
+    {
+        std::cerr << "Building menus and toolbar failed: " <<  ex.what();
+    }
+
     m_main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
     m_control_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
     m_search_bar = Gtk::manage(new Gtk::SearchBar());
+
+    //Get the menubar:
+    auto object = m_builder->get_object("menubar");
+    auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
+    if (!gmenu)
+        g_warning("GMenu not found");
+    else
+    {
+        m_menu_bar = Gtk::manage(new Gtk::MenuBar(gmenu));
+
+        //Add the MenuBar to the window:
+        m_main_box->pack_start(*m_menu_bar, Gtk::PACK_SHRINK);
+    }
 
     m_management_toolbar = Gtk::manage(new Gtk::Toolbar());
     m_add_button = Gtk::manage(new Gtk::ToolButton("Add"));
@@ -46,6 +146,7 @@ void MainWindow::create_gui(){
     m_import_xml = Gtk::manage(new Gtk::ToolButton("Import"));
     m_print_button = Gtk::manage(new Gtk::ToolButton("Print"));
     m_print_button->set_icon_name("document-print");
+    m_print_button->set_sensitive(false);
 
     m_tree_view_scrolled_window = Gtk::manage(new Gtk::ScrolledWindow());
     m_tree_view_scrolled_window->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
@@ -85,6 +186,7 @@ void MainWindow::create_gui(){
     m_seed_list_store->append_column("ID", m_seed_columns.m_seed_id);
     m_seed_list_store->get_column(0)->set_sort_column(m_seed_columns.m_seed_id);
     m_seed_list_store->get_column(0)->set_resizable(true);
+    m_seed_list_store->get_column(0)->set_visible(false);
 
     m_seed_list_store->append_column("Plant Name", m_seed_columns.m_seed_plant_name);
     m_seed_list_store->get_column(1)->set_sort_column(m_seed_columns.m_seed_plant_name);
@@ -100,7 +202,7 @@ void MainWindow::create_gui(){
     m_seed_list_store->get_column(3)->set_sort_column(m_seed_columns.m_seed_binomial_nomenclature);
     m_seed_list_store->get_column(3)->set_resizable(true);
 
-    
+
     m_seed_list_store->append_column("Description", m_seed_columns.m_seed_description);
     m_seed_list_store->get_column(4)->set_sort_column(m_seed_columns.m_seed_description);
     m_seed_list_store->get_column(4)->set_resizable(true);
@@ -117,6 +219,7 @@ void MainWindow::create_gui(){
 
     m_seed_list_store->grab_focus();
 
+    // set_icon_from_file("../icons/");
     set_default_size(600,500);
     set_title("Seed Manager");
 }
@@ -132,6 +235,10 @@ void MainWindow::connect_signals(){
     m_open_seed_info_button->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_open_seed_info_button_clicked));
     m_delete_button->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_delete_button_clicked));
 
+    m_export_all_xml->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_export_all_xml_clicked));
+    m_export_selected_xml->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_export_selected_xml_clicked));
+    m_import_xml->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_import_xml_clicked));
+
     m_seed_list_store->signal_row_activated().connect(sigc::mem_fun(*this, &MainWindow::on_list_store_row_activated));
     m_seed_list_store->get_selection()->signal_changed().connect(sigc::mem_fun(*this, &MainWindow::on_list_store_selection_change));
 }
@@ -144,8 +251,8 @@ bool MainWindow::on_key_press_event(GdkEventKey* key_event){
         return true;
     }else if((key_event->keyval == GDK_KEY_n) &&
             (((key_event->state & (GDK_CONTROL_MASK)) == GDK_CONTROL_MASK) || ((key_event->state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_MOD2_MASK)) == GDK_CONTROL_MASK))){
-            // CTRL + n open seed add window
-            open_add_seed_window();
+        // CTRL + n open seed add window
+        open_add_seed_window();
     }else if(key_event->keyval == GDK_KEY_Escape){
         //close the window, when the 'esc' key is pressed
         // TODO: ask for confirmation before closing
@@ -293,4 +400,102 @@ void MainWindow::on_list_store_selection_change(){
         m_open_seed_info_button->set_sensitive(true);
         m_export_selected_xml->set_sensitive(true);
     }
+}
+
+void MainWindow::on_export_all_xml_clicked(){
+    std::cout << "EXPORT ALL\n";
+
+    if (get_model()->export_all_to_xml(open_xml_dialog()) == false){
+        // ERROR MESSAGE
+        std::cout << "unable to export\n";
+    }
+}
+
+void MainWindow::on_export_selected_xml_clicked(){
+    std::cout << "EXPORT ONE\n";
+
+    //if (get_model()->export_seeds_to_xml(open_xml_dialog(), ) == false) {
+    //  // ERROR MSG
+    //}
+}
+
+void MainWindow::on_import_xml_clicked(){
+    std::cout << "IMPORT\n";
+
+    if (get_model()->import_to_xml(open_xml_dialog()) == false){
+        std::cout << "unable to import\n";
+        // ERROR MSG
+    }
+}
+
+std::string MainWindow::open_xml_dialog(){
+    std::string filename = "";
+    Gtk::FileChooserDialog dialog("Please choose a file",
+            Gtk::FILE_CHOOSER_ACTION_OPEN);
+    dialog.set_transient_for(*this);
+
+    //Add response buttons the the dialog:
+    dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+    dialog.add_button("_Open", Gtk::RESPONSE_OK);
+
+    //Add filters, so that only certain file types can be selected:
+
+    auto filter_text = Gtk::FileFilter::create();
+    filter_text->set_name("XML files");
+    filter_text->add_mime_type("text/xml");
+    filter_text->add_mime_type("application/xml");
+    dialog.add_filter(filter_text);
+
+    auto filter_any = Gtk::FileFilter::create();
+    filter_any->set_name("Any files");
+    filter_any->add_pattern("*");
+    dialog.add_filter(filter_any);
+    dialog.set_action(Gtk::FILE_CHOOSER_ACTION_SAVE);
+
+    //Show the dialog and wait for a user response:
+    int result = dialog.run();
+
+    //Handle the response:
+    switch(result)
+    {
+        case(Gtk::RESPONSE_OK):
+            {
+                filename = dialog.get_filename();
+                break;
+            }
+        case(Gtk::RESPONSE_CANCEL):
+            {
+                break;
+            }
+        default:
+            {
+                break;
+            }
+    }
+
+    return filename;
+}
+
+void MainWindow::on_help_button_clicked(){
+    std::cout << "HALP\n";
+}
+
+void MainWindow::on_about_button_clicked(){
+
+    Gtk::AboutDialog* dialog = new Gtk::AboutDialog();
+
+    dialog->set_transient_for(*this);
+
+    //dialog->set_logo(Gdk::Pixbuf::create_from_resource("/about/gtkmm_logo.gif", -1, 40, true));
+    dialog->set_program_name("Seed Manager");
+    dialog->set_version("0.1.0");
+    dialog->set_copyright("orion40");
+    dialog->set_comments("This is just a kickass application.");
+    dialog->set_license("LGPL");
+
+    dialog->set_website("http://www.github.com/orion40/");
+    dialog->set_website_label("Project Repo");
+
+    dialog->show();
+    dialog->present();
 }
