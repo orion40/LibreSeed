@@ -4,7 +4,9 @@ CREATE TABLE IF NOT EXISTS Seed (
     seed_variety_name TEXT,
     seed_binomial_name TEXT,
     seed_description TEXT,
-    CONSTRAINT Seed_PK PRIMARY KEY (seed_id)
+    category_id INTEGER,
+    CONSTRAINT Seed_PK PRIMARY KEY (seed_id),
+    FOREIGN KEY(category_id) REFERENCES Category(category_id)
 );
 
 CREATE TABLE IF NOT EXISTS Date (
