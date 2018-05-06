@@ -10,6 +10,7 @@
 #include <gtkmm/entry.h>
 #include <gtkmm/entrybuffer.h>
 #include <gtkmm/textview.h>
+#include <gtkmm/combobox.h>
 #include <gtkmm/liststore.h>
 
 #include <iostream>
@@ -40,6 +41,14 @@ class SeedAddWindow : public Gtk::Window{
 
         void fill_gui();
 
+        // GUI Creation methods
+        Gtk::Box* create_date_box();
+        Gtk::Box* create_stock_box();
+        Gtk::Box* create_picture_box();
+        Gtk::Grid* create_main_info_grid();
+        Gtk::Box* create_description_box();
+        Gtk::Toolbar* create_edit_toolbar();
+
         Controller* m_controller;
 
         Gtk::Box* m_main_box;
@@ -52,6 +61,8 @@ class SeedAddWindow : public Gtk::Window{
         Gtk::Entry* m_variety_name_entry;
         Gtk::Label* m_binomial_name_label;
         Gtk::Entry* m_binomial_name_entry;
+        Gtk::Label* m_category_label;
+        Gtk::ComboBox* m_category_combobox;
 
         Gtk::Box* m_description_box;
         Gtk::TextView* m_description_textfield;

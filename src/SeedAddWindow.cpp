@@ -38,55 +38,22 @@ SeedAddWindow::~SeedAddWindow(){
 void SeedAddWindow::create_gui(){
     m_main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
-    m_edit_toolbar = Gtk::manage(new Gtk::Toolbar());
-    m_save_button = Gtk::manage(new Gtk::ToolButton("Save"));
-    m_save_button->set_icon_name("document-save");
-    m_delete_button = Gtk::manage(new Gtk::ToolButton("Delete"));
-    m_delete_button->set_icon_name("edit-delete");
+    m_edit_toolbar = create_edit_toolbar();
 
     m_notebook = Gtk::manage(new Gtk::Notebook());
     m_notebook->set_tab_pos(Gtk::POS_LEFT);
 
-    m_main_info_grid = Gtk::manage(new Gtk::Grid());
-
-    m_plant_name_label = Gtk::manage(new Gtk::Label("Plant Name"));
-    m_plant_name_entry = Gtk::manage(new Gtk::Entry());
-    m_variety_name_label = Gtk::manage(new Gtk::Label("Variety Name"));
-    m_variety_name_entry = Gtk::manage(new Gtk::Entry());
-    m_binomial_name_label = Gtk::manage(new Gtk::Label("Binomial nomenclature"));
-    m_binomial_name_entry = Gtk::manage(new Gtk::Entry());
-    // TODO: a mettre dans un onglet à part ?
-    m_description_textfield = Gtk::manage(Gtk::manage(new Gtk::TextView()));
-    m_description_textfield->set_wrap_mode(Gtk::WRAP_WORD_CHAR);
-
-    m_main_info_grid->attach(*m_plant_name_label,0,0,1,1);
-    m_main_info_grid->attach(*m_variety_name_label,0,1,1,1);
-    m_main_info_grid->attach(*m_binomial_name_label,0,2,1,1);
-    m_main_info_grid->attach(*m_plant_name_entry,1,0,1,1);
-    m_main_info_grid->attach(*m_variety_name_entry,1,1,1,1);
-    m_main_info_grid->attach(*m_binomial_name_entry,1,2,1,1);
-
-    m_description_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-
-    m_description_box->pack_start(*m_description_textfield, Gtk::PACK_EXPAND_WIDGET);
-
-    m_dates_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-
-    // How to add a Date ? Already here but empty
-    // for int i = 0; i < MAX_DATES; i++
-    //      create DateWidget
-
-    m_stock_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-    m_pictures_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+    m_main_info_grid = create_main_info_grid();
+    m_description_box = create_description_box();
+    m_dates_box = create_date_box();
+    m_stock_box = create_stock_box();
+    m_pictures_box = create_picture_box();
 
     m_notebook->append_page(*m_main_info_grid, "Main Info");
     m_notebook->append_page(*m_description_box, "Description");
     m_notebook->append_page(*m_dates_box, "Dates");
     m_notebook->append_page(*m_stock_box, "Stock");
     m_notebook->append_page(*m_pictures_box, "Pictures");
-
-    m_edit_toolbar->append(*m_save_button);
-    m_edit_toolbar->append(*m_delete_button);
 
     m_main_box->pack_start(*m_edit_toolbar, Gtk::PACK_SHRINK);
     m_main_box->pack_start(*m_notebook, Gtk::PACK_EXPAND_WIDGET);
@@ -173,4 +140,79 @@ void SeedAddWindow::fill_gui(){
     m_variety_name_entry->set_text(m_seed->get_variety_name());
     m_binomial_name_entry->set_text(m_seed->get_binomial_nomenclature());
     m_description_textfield->get_buffer()->set_text(m_seed->get_description());
+}
+
+Gtk::Box* SeedAddWindow::create_stock_box(){
+    Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+
+    return box;
+}
+
+Gtk::Box* SeedAddWindow::create_picture_box(){
+    Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+
+    return box;
+}
+
+Gtk::Box* SeedAddWindow::create_date_box(){
+    Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+
+    // How to add a Date ? Already here but empty
+    // for int i = 0; i < MAX_DATES; i++
+    //      create DateWidget
+
+    return box;
+}
+
+Gtk::Grid* SeedAddWindow::create_main_info_grid(){
+    Gtk::Grid* grid = Gtk::manage(new Gtk::Grid());
+
+    m_plant_name_label = Gtk::manage(new Gtk::Label("Plant Name"));
+    m_plant_name_entry = Gtk::manage(new Gtk::Entry());
+    m_variety_name_label = Gtk::manage(new Gtk::Label("Variety Name"));
+    m_variety_name_entry = Gtk::manage(new Gtk::Entry());
+    m_binomial_name_label = Gtk::manage(new Gtk::Label("Binomial nomenclature"));
+    m_binomial_name_entry = Gtk::manage(new Gtk::Entry());
+    m_category_label = Gtk::manage(new Gtk::Label("Category"));
+    m_category_combobox = Gtk::manage(new Gtk::ComboBox());
+
+    // Labels
+    grid->attach(*m_plant_name_label,0,0,1,1);
+    grid->attach(*m_variety_name_label,0,1,1,1);
+    grid->attach(*m_binomial_name_label,0,2,1,1);
+    grid->attach(*m_category_label,0,3,1,1);
+
+    // Entry widgets
+    grid->attach(*m_plant_name_entry,1,0,1,1);
+    grid->attach(*m_variety_name_entry,1,1,1,1);
+    grid->attach(*m_binomial_name_entry,1,2,1,1);
+    grid->attach(*m_category_combobox,1,3,1,1);
+
+
+    return grid;
+}
+
+Gtk::Box* SeedAddWindow::create_description_box(){
+    Gtk::Box* box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+
+    m_description_textfield = Gtk::manage(Gtk::manage(new Gtk::TextView()));
+    m_description_textfield->set_wrap_mode(Gtk::WRAP_WORD_CHAR);
+
+    box->pack_start(*m_description_textfield, Gtk::PACK_EXPAND_WIDGET);
+
+    return box;
+}
+
+Gtk::Toolbar* SeedAddWindow::create_edit_toolbar(){
+    Gtk::Toolbar* toolbar = Gtk::manage(new Gtk::Toolbar());
+
+    m_save_button = Gtk::manage(new Gtk::ToolButton("Save"));
+    m_save_button->set_icon_name("document-save");
+    m_delete_button = Gtk::manage(new Gtk::ToolButton("Delete"));
+    m_delete_button->set_icon_name("edit-delete");
+
+    toolbar->append(*m_save_button);
+    toolbar->append(*m_delete_button);
+
+    return toolbar;
 }
