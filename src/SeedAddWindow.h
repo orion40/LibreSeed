@@ -1,6 +1,7 @@
 #ifndef SEEDEDITWINDOW_H
 #define SEEDEDITWINDOW_H
 
+#include <gtkmm/messagedialog.h>
 #include <gtkmm/window.h>
 #include <gtkmm/box.h>
 #include <gtkmm/toolbutton.h>
@@ -17,6 +18,7 @@
 
 #include "Controller.h"
 #include "SeedColumnsModel.h"
+#include "CategoriesColumnsModel.h"
 
 class SeedAddWindow : public Gtk::Window{
     public:
@@ -36,6 +38,9 @@ class SeedAddWindow : public Gtk::Window{
         void on_delete_button_clicked();
 
         bool on_key_press_event(GdkEventKey* event) override;
+        bool on_window_close_event(GdkEventAny* event);
+
+        int display_confirm_close();
 
         void save_seed();
 
@@ -74,6 +79,9 @@ class SeedAddWindow : public Gtk::Window{
         Gtk::Toolbar* m_edit_toolbar;
         Gtk::ToolButton* m_save_button;
         Gtk::ToolButton* m_delete_button;
+
+        Glib::RefPtr<Gtk::ListStore> m_category_tree_model;
+        CategoriesColumnsModel m_category_columns;
 
         // MainWindow ListStore model
         Glib::RefPtr<Gtk::ListStore> m_seed_tree_model;

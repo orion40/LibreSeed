@@ -7,26 +7,25 @@ SeedAddWindow::SeedAddWindow(){
 
 }
 
-SeedAddWindow::SeedAddWindow(Controller* controller, Glib::RefPtr<Gtk::ListStore> seed_model, SeedColumnsModel* columns){
+SeedAddWindow::SeedAddWindow(Controller* controller, Glib::RefPtr<Gtk::ListStore> seed_model, SeedColumnsModel* columns): SeedAddWindow(){
     m_seed = NULL;
     m_controller = controller;
     m_seed_tree_model = seed_model;
     m_seed_columns = columns;
-    create_gui();
     set_title("Add a new seed");
     set_icon_name("document-new");
+    create_gui();
     connect_signals();
 }
 
-SeedAddWindow::SeedAddWindow(Controller* controller, Glib::RefPtr<Gtk::ListStore> seed_model, SeedColumnsModel* columns, Seed* seed){
+SeedAddWindow::SeedAddWindow(Controller* controller, Glib::RefPtr<Gtk::ListStore> seed_model, SeedColumnsModel* columns, Seed* seed) : SeedAddWindow(){
     m_seed = seed;
     m_controller = controller;
     m_seed_tree_model = seed_model;
     m_seed_columns = columns;
-    create_gui();
     set_title("Edit a seed");
     set_icon_name("document-open");
-    connect_signals();
+    create_gui();
     fill_gui();
     connect_signals();
 }
@@ -70,6 +69,8 @@ void SeedAddWindow::create_gui(){
 void SeedAddWindow::connect_signals(){
     m_save_button->signal_clicked().connect(sigc::mem_fun(*this, &SeedAddWindow::on_save_button_clicked));
     m_delete_button->signal_clicked().connect(sigc::mem_fun(*this, &SeedAddWindow::on_delete_button_clicked));
+
+    signal_delete_event().connect(sigc::mem_fun(*this, &SeedAddWindow::on_window_close_event));
 }
 
 void SeedAddWindow::on_save_button_clicked(){
@@ -95,9 +96,7 @@ bool SeedAddWindow::on_key_press_event(GdkEventKey* key_event){
         save_seed();
     }else if(key_event->keyval == GDK_KEY_Escape){
         //close the window, when the 'esc' key is pressed
-        // TODO : ask for confirmation if fields are filed,
-        //  SAVE, CANCEL, CLOSE
-        hide();
+        close();
         return true;
     }
 
@@ -174,7 +173,19 @@ Gtk::Grid* SeedAddWindow::create_main_info_grid(){
     m_binomial_name_label = Gtk::manage(new Gtk::Label("Binomial nomenclature"));
     m_binomial_name_entry = Gtk::manage(new Gtk::Entry());
     m_category_label = Gtk::manage(new Gtk::Label("Category"));
+    m_category_tree_model = Gtk::ListStore::create(m_category_columns);
     m_category_combobox = Gtk::manage(new Gtk::ComboBox());
+    m_category_combobox->set_model(m_category_tree_model);
+
+    std::list<Category*> categories = m_controller->get_model()->get_categories();
+    m_category_tree_model->clear();
+    for (std::list<Category*>::iterator it = categories.begin(); it != categories.end(); it++){
+        Gtk::ListStore::Row row = *(m_category_tree_model->append());
+        row[m_category_columns.m_category_name] = (*it)->get_category_name();
+        std::cout << (*it)->get_category_name() << std::endl;
+    }
+
+    m_category_combobox->pack_start(m_category_columns.m_category_name);
 
     // Labels
     grid->attach(*m_plant_name_label,0,0,1,1);
@@ -215,4 +226,44 @@ Gtk::Toolbar* SeedAddWindow::create_edit_toolbar(){
     toolbar->append(*m_delete_button);
 
     return toolbar;
+}
+
+bool SeedAddWindow::on_window_close_event(GdkEventAny* event){
+    int result = display_confirm_close();
+
+    switch (result){
+        case 0:
+            // Don't save, just close
+            return Gtk::Window::on_delete_event(event);
+            break;
+        case 1:
+            // Cancel
+            return true;
+            break;
+        case 2:
+            // Save and exit
+            save_seed();
+            return Gtk::Window::on_delete_event(event);
+            break;
+        default:
+            return true;
+            break;
+    }
+
+    return Gtk::Window::on_delete_event(event);
+}
+
+int SeedAddWindow::display_confirm_close(){
+    // TODO : ask for confirmation if fields are filed,
+    //  SAVE, CANCEL, CLOSE
+    Gtk::MessageDialog dialog(*this, "Save changes to current seed ?",
+            false /* use_markup */, Gtk::MESSAGE_WARNING, Gtk::BUTTONS_NONE);
+
+    dialog.set_icon_name("dialog-warning");
+
+    dialog.add_button("Don't save", 0);
+    dialog.add_button("Cancel", 1);
+    dialog.add_button("Save", 2);
+
+    return dialog.run();
 }
