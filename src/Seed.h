@@ -64,6 +64,8 @@ class Seed{
         Glib::ustring m_binomial_nomenclature;
         Glib::ustring m_description;
 
+        Category* m_plant_category;
+
         DateInfo* m_dates[MAX_DATES];
         uint32_t m_plant_sowing_date;
         uint32_t m_plant_pruning_date;
