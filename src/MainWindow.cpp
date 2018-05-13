@@ -2,6 +2,7 @@
 
 MainWindow::MainWindow(){
     m_seed_add_window = NULL;
+    m_category_window = NULL;
 }
 
 
@@ -35,6 +36,8 @@ void MainWindow::create_gui(const Glib::RefPtr<Gtk::Application>& app){
                 sigc::mem_fun(*this, &MainWindow::on_add_button_clicked) );
     m_action_group->add_action("open-selected",
                 sigc::mem_fun(*this, &MainWindow::on_open_seed_info_button_clicked) );
+    m_action_group->add_action("manage-categories",
+                sigc::mem_fun(*this, &MainWindow::open_categories_manager) );
     m_action_group->add_action("delete",
                 sigc::mem_fun(*this, &MainWindow::on_delete_button_clicked) );
 
@@ -58,6 +61,11 @@ void MainWindow::create_gui(const Glib::RefPtr<Gtk::Application>& app){
         "          <attribute name='label' translatable='yes'>_New</attribute>"
         "          <attribute name='action'>menu.new</attribute>"
         "          <attribute name='accel'>&lt;Primary&gt;n</attribute>"
+        "        </item>"
+        "        <item>"
+        "          <attribute name='label' translatable='yes'>_Manage categories</attribute>"
+        "          <attribute name='action'>menu.manage-categories</attribute>"
+        "          <attribute name='accel'>&lt;Primary&gt;g</attribute>"
         "        </item>"
         "        <item>"
         "          <attribute name='label' translatable='yes'>_Open Seed Info</attribute>"
@@ -102,6 +110,7 @@ void MainWindow::create_gui(const Glib::RefPtr<Gtk::Application>& app){
     // Gtk::Application::set_accel_for_action() is new in gtkmm 3.11.9.
     app->set_accel_for_action("menu.new", "<Primary>n");
     app->set_accel_for_action("menu.open-selected", "<Primary>o");
+    app->set_accel_for_action("menu.manage-categories", "<Primary>g");
     app->set_accel_for_action("menu.quit", "<Primary>q");
     app->set_accel_for_action("menu.cut", "<Primary>x");
     app->set_accel_for_action("menu.copy", "<Primary>c");
@@ -133,41 +142,14 @@ void MainWindow::create_gui(const Glib::RefPtr<Gtk::Application>& app){
         m_main_box->pack_start(*m_menu_bar, Gtk::PACK_SHRINK);
     }
 
-    m_management_toolbar = Gtk::manage(new Gtk::Toolbar());
-    m_add_button = Gtk::manage(new Gtk::ToolButton("Add"));
-    m_add_button->set_icon_name("document-new");
-    m_delete_button = Gtk::manage(new Gtk::ToolButton("Delete"));
-    m_delete_button->set_icon_name("edit-delete");
-    m_open_seed_info_button = Gtk::manage(new Gtk::ToolButton("Open Seed card"));
-    m_open_seed_info_button->set_icon_name("document-open");
-    // TODO : add icons
-    m_export_selected_xml = Gtk::manage(new Gtk::ToolButton("Export Selected"));
-    m_export_all_xml = Gtk::manage(new Gtk::ToolButton("Export All"));
-    m_import_xml = Gtk::manage(new Gtk::ToolButton("Import"));
-    m_print_button = Gtk::manage(new Gtk::ToolButton("Print"));
-    m_print_button->set_icon_name("document-print");
-    m_print_button->set_sensitive(false);
+    m_management_toolbar = create_management_toolbar();
+    m_seed_list_store = create_seed_list_store();
 
-    m_tree_view_scrolled_window = Gtk::manage(new Gtk::ScrolledWindow());
-    m_tree_view_scrolled_window->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+    m_seed_tree_view_scrolled_window = Gtk::manage(new Gtk::ScrolledWindow());
+    m_seed_tree_view_scrolled_window->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+    m_seed_tree_view_scrolled_window->add(*m_seed_list_store);
 
-    m_seed_list_store = Gtk::manage(new Gtk::TreeView());
     m_search_text_view = Gtk::manage(new Gtk::SearchEntry());
-
-    // Add buttons to toolbar
-    m_management_toolbar->append(*m_add_button);
-    m_management_toolbar->append(*m_delete_button);
-    m_management_toolbar->append(*m_open_seed_info_button);
-
-    m_management_toolbar->append(*m_export_all_xml);
-    m_management_toolbar->append(*m_export_selected_xml);
-    m_management_toolbar->append(*m_import_xml);
-
-    m_management_toolbar->append(*m_print_button);
-
-    // Layout and graphic for "toolbar"
-    //m_management_toolbar->set_layout(Gtk::BUTTONBOX_START);
-    //m_management_toolbar->set_border_width(5);
 
     // Search elements
     m_search_bar->connect_entry(*m_search_text_view);
@@ -176,43 +158,9 @@ void MainWindow::create_gui(const Glib::RefPtr<Gtk::Application>& app){
     m_control_box->pack_start(*m_management_toolbar, Gtk::PACK_SHRINK);
     m_control_box->pack_start(*m_search_bar, Gtk::PACK_SHRINK);
 
-    // Tree store and model
-    m_seed_tree_model = Gtk::ListStore::create(m_seed_columns);
-    // TODO: later for multiple selection
-    //m_seed_list_store->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
-    m_seed_list_store->set_model(m_seed_tree_model);
-    m_tree_view_scrolled_window->add(*m_seed_list_store);
-
-    m_seed_list_store->append_column("ID", m_seed_columns.m_seed_id);
-    m_seed_list_store->get_column(0)->set_sort_column(m_seed_columns.m_seed_id);
-    m_seed_list_store->get_column(0)->set_resizable(true);
-    m_seed_list_store->get_column(0)->set_visible(false);
-
-    m_seed_list_store->append_column("Plant Name", m_seed_columns.m_seed_plant_name);
-    m_seed_list_store->get_column(1)->set_sort_column(m_seed_columns.m_seed_plant_name);
-    m_seed_list_store->get_column(1)->set_resizable(true);
-
-
-    m_seed_list_store->append_column("Plant Variety", m_seed_columns.m_seed_variety_name);
-    m_seed_list_store->get_column(2)->set_sort_column(m_seed_columns.m_seed_variety_name);
-    m_seed_list_store->get_column(2)->set_resizable(true);
-
-
-    m_seed_list_store->append_column("Binomial Nomenclature", m_seed_columns.m_seed_binomial_nomenclature);
-    m_seed_list_store->get_column(3)->set_sort_column(m_seed_columns.m_seed_binomial_nomenclature);
-    m_seed_list_store->get_column(3)->set_resizable(true);
-
-
-    m_seed_list_store->append_column("Description", m_seed_columns.m_seed_description);
-    m_seed_list_store->get_column(4)->set_sort_column(m_seed_columns.m_seed_description);
-    m_seed_list_store->get_column(4)->set_resizable(true);
-
-
-
-
     // Add all elements to the main window
     m_main_box->pack_start(*m_control_box, Gtk::PACK_SHRINK);
-    m_main_box->pack_start(*m_tree_view_scrolled_window, Gtk::PACK_EXPAND_WIDGET);
+    m_main_box->pack_start(*m_seed_tree_view_scrolled_window, Gtk::PACK_EXPAND_WIDGET);
     add(*m_main_box);
 
     show_all_children();
@@ -253,6 +201,7 @@ bool MainWindow::on_key_press_event(GdkEventKey* key_event){
             (((key_event->state & (GDK_CONTROL_MASK)) == GDK_CONTROL_MASK) || ((key_event->state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_MOD2_MASK)) == GDK_CONTROL_MASK))){
         // CTRL + n open seed add window
         open_add_seed_window();
+        return true;
     }else if(key_event->keyval == GDK_KEY_Escape){
         //close the window, when the 'esc' key is pressed
         // TODO: ask for confirmation before closing
@@ -298,7 +247,7 @@ void MainWindow::on_delete_button_clicked(){
 
 void MainWindow::delete_selected_seed(){
     Glib::RefPtr<Gtk::TreeSelection> refTreeSelection = m_seed_list_store->get_selection();
-    Gtk::TreeModel::iterator iter = refTreeSelection ->get_selected();
+    Gtk::TreeModel::iterator iter = refTreeSelection->get_selected();
     if (iter){
         Gtk::TreeModel::Row row = *iter;
         std::cout << "Selected: ";
@@ -321,7 +270,8 @@ void MainWindow::delete_selected_seed(){
                 {
                     Seed*s = m_controller->get_model()->getSeedById(row[m_seed_columns.m_seed_id]);
                     m_controller->get_model()->remove_seed(s);
-                    fill_tree_store();
+                    m_seed_tree_model->erase(iter);
+                    //fill_tree_store();
                     break;
                 }
             case (Gtk::RESPONSE_DELETE_EVENT):
@@ -498,4 +448,84 @@ void MainWindow::on_about_button_clicked(){
 
     dialog->show();
     dialog->present();
+}
+
+void MainWindow::open_categories_manager(){
+    if (m_category_window == NULL){
+        m_category_window = new CategoryWindow(m_controller);
+    } else {
+        delete m_category_window;
+        m_category_window = new CategoryWindow(m_controller);
+    }
+    m_category_window->show();
+}
+
+Gtk::TreeView* MainWindow::create_seed_list_store(){
+
+    Gtk::TreeView* list_store = Gtk::manage(new Gtk::TreeView());
+    // Tree store and model
+    m_seed_tree_model = Gtk::ListStore::create(m_seed_columns);
+    // TODO: later for multiple selection
+    //list_store->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
+    list_store->set_model(m_seed_tree_model);
+
+    list_store->append_column("ID", m_seed_columns.m_seed_id);
+    list_store->get_column(0)->set_sort_column(m_seed_columns.m_seed_id);
+    list_store->get_column(0)->set_resizable(true);
+    list_store->get_column(0)->set_visible(false);
+
+    list_store->append_column("Plant Name", m_seed_columns.m_seed_plant_name);
+    list_store->get_column(1)->set_sort_column(m_seed_columns.m_seed_plant_name);
+    list_store->get_column(1)->set_resizable(true);
+
+
+    list_store->append_column("Plant Variety", m_seed_columns.m_seed_variety_name);
+    list_store->get_column(2)->set_sort_column(m_seed_columns.m_seed_variety_name);
+    list_store->get_column(2)->set_resizable(true);
+
+
+    list_store->append_column("Binomial Nomenclature", m_seed_columns.m_seed_binomial_nomenclature);
+    list_store->get_column(3)->set_sort_column(m_seed_columns.m_seed_binomial_nomenclature);
+    list_store->get_column(3)->set_resizable(true);
+
+
+    list_store->append_column("Description", m_seed_columns.m_seed_description);
+    list_store->get_column(4)->set_sort_column(m_seed_columns.m_seed_description);
+    list_store->get_column(4)->set_resizable(true);
+
+    return list_store;
+}
+
+Gtk::Toolbar* MainWindow::create_management_toolbar(){
+    Gtk::Toolbar* toolbar = Gtk::manage(new Gtk::Toolbar());
+    m_add_button = Gtk::manage(new Gtk::ToolButton("Add"));
+    m_add_button->set_icon_name("document-new");
+    m_delete_button = Gtk::manage(new Gtk::ToolButton("Delete"));
+    m_delete_button->set_icon_name("edit-delete");
+    m_open_seed_info_button = Gtk::manage(new Gtk::ToolButton("Open Seed card"));
+    m_open_seed_info_button->set_icon_name("document-open");
+    // TODO : add icons
+    m_export_selected_xml = Gtk::manage(new Gtk::ToolButton("Export Selected"));
+    m_export_all_xml = Gtk::manage(new Gtk::ToolButton("Export All"));
+    m_import_xml = Gtk::manage(new Gtk::ToolButton("Import"));
+    m_print_button = Gtk::manage(new Gtk::ToolButton("Print"));
+    m_print_button->set_icon_name("document-print");
+    m_print_button->set_sensitive(false);
+
+    // Add buttons to toolbar
+    toolbar->append(*m_add_button);
+    toolbar->append(*m_delete_button);
+    toolbar->append(*m_open_seed_info_button);
+
+    /* toolbar->append(*m_export_all_xml); */
+    /* toolbar->append(*m_export_selected_xml); */
+    /* toolbar->append(*m_import_xml); */
+
+    /* toolbar->append(*m_print_button); */
+
+    // Layout and graphic for "toolbar"
+    //m_management_toolbar->set_layout(Gtk::BUTTONBOX_START);
+    //m_management_toolbar->set_border_width(5);
+
+    return toolbar;
 }
