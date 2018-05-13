@@ -56,6 +56,7 @@ bool Seed::fill_from_sql(sqlite3_stmt* stmt){
     set_variety_name(sqlite3_column_text(stmt, 2));
     set_binomial_nomenclature(sqlite3_column_text(stmt, 3));
     set_description(sqlite3_column_text(stmt, 4));
+    set_plant_category_id(sqlite3_column_int(stmt, 4));
     set_modified(false);
     return true;
 }
@@ -131,4 +132,5 @@ void Seed::print_seed(){
     std::cout << "Variety\t" << m_variety_name << std::endl;
     std::cout << "Binomial\t" << m_binomial_nomenclature << std::endl;
     std::cout << "Desc\t" << m_description << std::endl;
+    std::cout << "Category id\t" << m_plant_category_id << std::endl;
 }

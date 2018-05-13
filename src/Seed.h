@@ -35,6 +35,8 @@ class Seed{
         uint32_t get_plant_pruning_date(){return m_plant_pruning_date;}
         uint32_t get_plant_harvest_date(){return m_plant_harvest_date;}
 
+        int get_plant_category_id(){return m_plant_category_id;}
+
         uint32_t get_quantity_left(){return m_quantity_left;}
         Glib::ustring get_quantity_unit(){return m_quantity_unit;}
         struct tm get_seed_harvest_date(){return m_seed_harvest_date;}
@@ -49,6 +51,7 @@ class Seed{
         void set_binomial_nomenclature(Glib::ustring binomial_nomenclature){set_modified(true); m_binomial_nomenclature = binomial_nomenclature;}
         void set_description(const unsigned char* description);
         void set_description(Glib::ustring description){set_modified(true); m_description = description;}
+        void set_plant_category_id(int id){ m_plant_category_id = id;};
 
         void print_seed();
 
@@ -64,7 +67,7 @@ class Seed{
         Glib::ustring m_binomial_nomenclature;
         Glib::ustring m_description;
 
-        Category* m_plant_category;
+        int m_plant_category_id;
 
         DateInfo* m_dates[MAX_DATES];
         uint32_t m_plant_sowing_date;
