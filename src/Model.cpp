@@ -49,6 +49,7 @@ bool Model::open_db(){
                     return false;
                 }
             } else {
+                std::cerr << "Error creating database.\n";
                 return false;
             }
         }
@@ -58,6 +59,7 @@ bool Model::open_db(){
             return false;
         }
     } else {
+        std::cerr << "No database path supplied.\n";
         return false;
     }
     return true;
@@ -144,7 +146,7 @@ bool Model::load_db(){
                     result = true;
                     break;
                 default:
-            std::cerr << "Error loading categories from database : " << sqlite3_errmsg(m_db) << "\n";
+                    std::cerr << "Error loading categories from database : " << sqlite3_errmsg(m_db) << "\n";
                     return false;
                     break;
             }
@@ -164,36 +166,33 @@ bool Model::load_db(){
 bool Model::create_db(){
     std::cerr << "Creating database if needed...\n";
     char sql_script[] = "/home/whoami/programming/big_projects/seed_manager/src/create_db.sql";
-    int script_length, r;
+    int script_length;
+    bool result = false;
     std::ifstream script_fs(sql_script, std::fstream::in);
+
     if (script_fs) {
-        sqlite3_stmt* create_db_stmt;
         char* buffer;
+        char** err_msg = NULL;
         script_fs.seekg(0, script_fs.end);
         script_length = script_fs.tellg();
         script_fs.seekg(0, script_fs.beg);
 
-
         buffer = new char[script_length];
-
         script_fs.read(buffer, script_length);
 
-        if (sqlite3_prepare_v2(m_db, buffer, -1, &create_db_stmt, NULL) == SQLITE_OK){
-            std::cerr << "Creating DB...\n";
-            if ((r = sqlite3_step(create_db_stmt)) == SQLITE_DONE){
-                std::cerr << "Successfully created DB.\n";
-                return true;
-            } else {
-                std::cerr << "Error creating db(" << r << "): " << sqlite3_errmsg(m_db) << "\n";
-            }
+        //std::cout << "sql:\n" << buffer << "\n";
+
+        if (sqlite3_exec(m_db, buffer, NULL, NULL, err_msg) == SQLITE_OK){
+            result = true;
         } else {
-            std::cerr << "Error preparing request: " << sqlite3_errmsg(m_db) << "\n";
+            std::cerr << "Error executing request: " << sqlite3_errmsg(m_db) << "\n" << err_msg << "\n";
         }
+        delete buffer;
     } else {
         std::cerr << "Error opening db script: " << strerror(errno) << "\n";
     }
 
-    return false;
+    return result;
 }
 
 bool Model::save_content(){

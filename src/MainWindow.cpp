@@ -21,7 +21,9 @@ MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& app, Controller* co
                 Gtk::MESSAGE_ERROR,
                 Gtk::BUTTONS_OK);
         dialog.set_secondary_text("Please run this program from a terminal to see more information.");
+        dialog.set_icon_name("dialog-error");
         dialog.run();
+        exit(1);
     }
 }
 
