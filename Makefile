@@ -8,7 +8,6 @@ LDFLAGS=
 SQLITE3_LIB=`pkg-config --libs sqlite3`
 GLIBMM_LIB=`pkg-config --cflags --libs glibmm-2.4`
 GTKMM3_LIB=`pkg-config --libs --cflags gtkmm-3.0`
-LIBXML++2.6=`pkg-config --cflags --libs libxml++-2.6`
 
 TARGET=seed_manager
 
@@ -17,7 +16,7 @@ all: $(OUT_DIR) $(OUT_DIR)/$(TARGET)
 $(OUT_DIR):
 	mkdir -p $@
 
-$(OUT_DIR)/$(TARGET): $(OUT_DIR)/main.o $(OUT_DIR)/Controller.o $(OUT_DIR)/SeedAddWindow.o $(OUT_DIR)/Seed.o $(OUT_DIR)/MainWindow.o $(OUT_DIR)/SeedColumnsModel.o $(OUT_DIR)/Model.o $(OUT_DIR)/DateInfo.o $(OUT_DIR)/Category.o
+$(OUT_DIR)/$(TARGET): $(OUT_DIR)/main.o $(OUT_DIR)/Controller.o $(OUT_DIR)/SeedAddWindow.o $(OUT_DIR)/Seed.o $(OUT_DIR)/MainWindow.o $(OUT_DIR)/SeedColumnsModel.o $(OUT_DIR)/Model.o $(OUT_DIR)/DateInfo.o $(OUT_DIR)/Category.o $(OUT_DIR)/CategoryWindow.o $(OUT_DIR)/CategoriesColumnsModel.o
 	$(CC) $^ $(GTKMM3_LIB) $(SQLITE3_LIB) $(GLIBMM_LIB) $(CPPFLAGS) $(LDFLAGS) -o $@
 
 $(OUT_DIR)/main.o: $(IN_DIR)/main.cpp
@@ -47,5 +46,11 @@ $(OUT_DIR)/DateInfo.o: $(IN_DIR)/DateInfo.cpp
 $(OUT_DIR)/Category.o: $(IN_DIR)/Category.cpp
 	$(CC) $(CPPFLAGS) $^ $(GTKMM3_LIB) -c -o $@ $(GLIBMM_LIB)
 
+$(OUT_DIR)/CategoryWindow.o: $(IN_DIR)/CategoryWindow.cpp
+	$(CC) $(CPPFLAGS) $^ $(GTKMM3_LIB) -c -o $@ $(GLIBMM_LIB)
+
+$(OUT_DIR)/CategoriesColumnsModel.o: $(IN_DIR)/CategoriesColumnsModel.cpp
+	$(CC) $(CPPFLAGS) $^ $(GTKMM3_LIB) -c -o $@ $(GLIBMM_LIB)
+
 clean:
-	rm -rf build/
+	rm -rf $(OUT_DIR)
