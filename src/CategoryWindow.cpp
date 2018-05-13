@@ -88,7 +88,6 @@ bool CategoryWindow::on_key_press_event(GdkEventKey* key_event){
         add_category();
     }else if(key_event->keyval == GDK_KEY_Escape){
         //close the window, when the 'esc' key is pressed
-        // TODO: ask for confirmation before closing
         hide();
         return true;
     }
@@ -106,17 +105,12 @@ void CategoryWindow::on_delete_button_clicked(){
 }
 
 void CategoryWindow::add_category(){
-    Gtk::ListStore::Row row = *(m_category_tree_model->prepend());
-    Category* category = new Category("New Category");
+    m_category_tree_model->prepend();
     Gtk::TreeModel::iterator iter = m_category_tree_model->children().begin();
         if(iter){
             m_category_list_store->set_cursor(m_category_list_store->get_model()->get_path(iter), *m_category_list_store->get_column(0), true);
         }
-    m_controller->get_model()->add_category(category);
-    m_controller->get_model()->save_content();
 
-    /* row[m_category_columns.m_category_id] = category->get_id(); */
-    /* row[m_category_columns.m_category_name] = category->get_category_name(); */
 }
 
 void CategoryWindow::delete_category(){
@@ -191,12 +185,17 @@ void CategoryWindow::display_category_selection_needed(){
 }
 
 void CategoryWindow::on_list_store_row_change(const Gtk::TreeModel::Path& path, Gtk::TreeIter iter){
-    // TODO: save in db the changd Category
     Gtk::TreeModel::Row row = *iter;
     std::cout << "[" << __FUNCTION__ << "] row id : " << row[m_category_columns.m_category_id] << " - ";
     std::cout << row[m_category_columns.m_category_name] << "\n";
 
-    /* Category* c =  m_controller->get_model()->get_category_by_id(row[m_category_columns.m_category_id]); */
-    /* c->set_category_name(row[m_category_columns.m_category_name]); */
-    /* m_controller->get_model()->save_content(); */
+    Category* c =  m_controller->get_model()->get_category_by_id(row[m_category_columns.m_category_id]);
+    if (c != NULL){
+        c->set_category_name(row[m_category_columns.m_category_name]);
+    } else {
+        std::cout << "creating new cat\n";
+        c = new Category(row[m_category_columns.m_category_name]);
+        m_controller->get_model()->add_category(c);
+    }
+    m_controller->get_model()->save_content();
 }
