@@ -254,16 +254,20 @@ bool SeedAddWindow::on_window_close_event(GdkEventAny* event){
 }
 
 int SeedAddWindow::display_confirm_close(){
-    // TODO : ask for confirmation if fields are filed,
-    //  SAVE, CANCEL, CLOSE
-    Gtk::MessageDialog dialog(*this, "Save changes to current seed ?",
-            false /* use_markup */, Gtk::MESSAGE_WARNING, Gtk::BUTTONS_NONE);
+    // TODO : ask for confirmation if fields are filed
+    /* if (m_seed->is_modified()){ */
+        //  SAVE, CANCEL, CLOSE
+        Gtk::MessageDialog dialog(*this, "Save changes to current seed ?",
+                false /* use_markup */, Gtk::MESSAGE_WARNING, Gtk::BUTTONS_NONE);
 
-    dialog.set_icon_name("dialog-warning");
+        dialog.set_icon_name("dialog-warning");
 
-    dialog.add_button("Don't save", 0);
-    dialog.add_button("Cancel", 1);
-    dialog.add_button("Save", 2);
+        dialog.add_button("Don't save", 0);
+        dialog.add_button("Cancel", 1);
+        dialog.add_button("Save", 2);
 
-    return dialog.run();
+        return dialog.run();
+    /* } else { */
+    /*     return 0; */
+    /* } */
 }

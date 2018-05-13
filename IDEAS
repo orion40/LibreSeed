@@ -18,27 +18,47 @@ L'application commence, on charge la DB, on affiche un splashscreen avec une bar
 Le controler charge la bdd
 On remplit la GUI avec les élements de la BDD
 
-Graines:
+Graines: pouvoir regrouper les graines en lots (ex : carré du jardin)
+Main Info
     Nom de la plante
+        Nom classique (carotte, choux...)
+        Nom secondaire (Nantaise amélioré, de XYZ...)
     Nom latin
-    Description
-    Date (faire un widget spécial ? avec des push down buttons pour les mois bons ?)
-        Semis
-        Récolte
-        Taille
-    ...
+
+    Taille (Nain, géant...)
     Temps de croissance en général
     Type de sol
     Anti insecte
+
+Description
+    Description
+
+Date
+    Date (faire un widget spécial ? avec des push down buttons pour les mois bons ?)
+        Semis
+        Taille
+        Récolte
+    ...
+
+Stock
     Quantité restante (d'un nombre discret, une quantité à une estimation)
     Unité de quantité (ml, g, nb discret)
+    Date de récolte (avec warning à ce sujet)
     Date d'expiration (avec warning à ce sujet)
+
+Images
+    Graines
+    Différents stades
 
 Fonctionnalités clées :
     Pouvoir ajouter des graines avec le max d'infos
     Pouvoir trier ses graines et les choisir selons divers facteurs
         Ex: semis mars, sol calcaire -> me met toutes les plantes qui correspondent
-
+Fonctionnalitées autres:
+    Pouvoir compter le nombre de graines en général
+    Pouvoir compter le nombre de graines qui ne sont pas vides
+    Nbre de graines d'une certaine catégorie
+    ...
 ---
 Difficulté : juste besoin de temps, mieux gérer C++, GTKMM et SQLITE
 

@@ -204,8 +204,7 @@ bool MainWindow::on_key_press_event(GdkEventKey* key_event){
         return true;
     }else if(key_event->keyval == GDK_KEY_Escape){
         //close the window, when the 'esc' key is pressed
-        // TODO: ask for confirmation before closing
-        hide();
+        close();
         return true;
     }
 

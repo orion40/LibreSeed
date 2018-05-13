@@ -96,7 +96,7 @@ bool Model::load_db(){
                     return false;
                     break;
                 case SQLITE_DONE:
-                    std::cout << "Loaded database content successfully !\n";
+                    std::cout << "Loaded seeds sucessfully...\n";
                     result = true;
                     break;
                 default:
@@ -140,7 +140,7 @@ bool Model::load_db(){
                     return false;
                     break;
                 case SQLITE_DONE:
-                    std::cout << "Loaded database content successfully !\n";
+                    std::cout << "Loaded categories sucessfully...\n";
                     result = true;
                     break;
                 default:
