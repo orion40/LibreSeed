@@ -65,6 +65,10 @@ bool Model::open_db(){
 
 bool Model::load_db(){
     int query_result, load_query_result;
+    bool result = false;
+
+    // LOAD SEED
+
     const char* load_seed = "SELECT * FROM Seed";
     sqlite3_stmt* load_stmt;
     /*
@@ -88,28 +92,73 @@ bool Model::load_db(){
             }
             switch (load_query_result){
                 case SQLITE_ERROR:
-                    std::cerr << "Error loading database content: " << sqlite3_errmsg(m_db) << "\n";
+                    std::cerr << "Error loading categories from database : " << sqlite3_errmsg(m_db) << "\n";
                     return false;
                     break;
                 case SQLITE_DONE:
                     std::cout << "Loaded database content successfully !\n";
-                    return true;
+                    result = true;
                     break;
                 default:
-                    std::cerr << "Error loading database content: " << sqlite3_errmsg(m_db) << "\n";
+                    std::cerr << "Error loading categories from database : " << sqlite3_errmsg(m_db) << "\n";
                     return false;
                     break;
             }
             break;
         case SQLITE_ERROR:
-            std::cerr << "Error loading database content: " << sqlite3_errmsg(m_db) << "\n";
+            std::cerr << "Error loading categories from database : " << sqlite3_errmsg(m_db) << "\n";
             return false;
             break;
         default:
             std::cerr << "Unhandled error code: " << query_result << " " <<  sqlite3_errmsg(m_db) << "\n";
             break;
     }
-    return false;
+
+    // LOADING CATEGORY
+    const char* load_category = "SELECT * FROM Category";
+    /*
+       int sqlite3_prepare_v2(
+       sqlite3 *db,             Database handle
+       const char *zSql,       SQL statement, UTF-8 encoded
+       int nByte,              Maximum length of zSql in bytes.
+       sqlite3_stmt **ppStmt,  OUT: Statement handle
+       const char **pzTail     OUT: Pointer to unused portion of zSql
+       );
+       */
+    query_result = sqlite3_prepare_v2(m_db, load_category, -1, &load_stmt, NULL);
+    switch (query_result){
+        case SQLITE_OK:
+            while ((load_query_result = sqlite3_step(load_stmt)) == SQLITE_ROW){
+                Category* c = new Category();
+
+                c->fill_from_sql(load_stmt);
+                add_category(c);
+            }
+            switch (load_query_result){
+                case SQLITE_ERROR:
+                    std::cerr << "Error loading categories from database : " << sqlite3_errmsg(m_db) << "\n";
+                    return false;
+                    break;
+                case SQLITE_DONE:
+                    std::cout << "Loaded database content successfully !\n";
+                    result = true;
+                    break;
+                default:
+            std::cerr << "Error loading categories from database : " << sqlite3_errmsg(m_db) << "\n";
+                    return false;
+                    break;
+            }
+            break;
+        case SQLITE_ERROR:
+            std::cerr << "Error loading categories from database : " << sqlite3_errmsg(m_db) << "\n";
+            return false;
+            break;
+        default:
+            std::cerr << "Unhandled error code: " << query_result << " " <<  sqlite3_errmsg(m_db) << "\n";
+            break;
+    }
+
+    return result;
 }
 
 bool Model::create_db(){
@@ -154,6 +203,10 @@ bool Model::save_content(){
         result = (*it)->save_to_db(m_db);
     }
 
+    for (std::list<Category*>::iterator it = m_categories.begin(); it != m_categories.end(); it++){
+        (*it)->save_to_db(m_db);
+    }
+
     return result;
 }
 
@@ -165,4 +218,86 @@ Seed* Model::getSeedById(int id){
     }
 
     return NULL;
+}
+
+bool Model::export_seeds_to_xml(std::string filename, std::list<Seed*> seed_list){
+    std::ifstream xml_fs(filename, std::fstream::in);
+    if (xml_fs){
+
+    } else {
+        std::cerr << "Error opening XML file: " << strerror(errno) << "\n";
+    }
+
+    return false;
+}
+
+bool Model::export_all_to_xml(std::string filename){
+    std::ifstream xml_fs(filename, std::fstream::in);
+    if (xml_fs){
+
+    } else {
+        std::cerr << "Error opening XML file: " << strerror(errno) << "\n";
+    }
+
+    return false;
+}
+
+bool Model::import_to_xml(std::string filename){
+    std::ifstream xml_fs(filename, std::fstream::in);
+    if (xml_fs){
+
+    } else {
+        std::cerr << "Error opening XML file: " << strerror(errno) << "\n";
+    }
+
+    return false;
+}
+
+bool Model::open_file(std::string filename){
+    std::ifstream (filename, std::fstream::in);
+
+    return false;
+}
+
+Category* Model::get_category_by_id(int id){
+    for (std::list<Category*>::iterator it = m_categories.begin(); it != m_categories.end(); it++){
+        (*it)->print_category();
+        if ((*it)->get_id() == id){
+            return (*it);
+        }
+    }
+
+    return NULL;
+}
+
+void Model::add_category(Category* c){
+    m_categories.push_back(c);
+}
+
+void Model::remove_category(Category* c){
+    if (c == NULL){
+        std::cout << "Error, empty category given. Nothing removed\n";
+        return;
+    }
+    int change_query_result;
+    sqlite3_stmt* edition_stmt;
+    std::string insert_stmt_string = "DELETE FROM category WHERE category_id=?;";
+    change_query_result = sqlite3_prepare_v2(m_db, insert_stmt_string.c_str(), -1, &edition_stmt, NULL);
+    switch (change_query_result){
+        case SQLITE_OK:
+            sqlite3_bind_int(edition_stmt, 1, c->get_id());
+            switch (sqlite3_step(edition_stmt)){
+                case SQLITE_DONE:
+                    std::cout << "Successfully removed Category from database\n";
+                    sqlite3_finalize(edition_stmt);
+                    break;
+                default:
+                    std::cerr << "Error removing from database.\n";
+                    break;
+            }
+            break;
+        default:
+            std::cerr << "Error preparing sql statement: " << sqlite3_errmsg(m_db) << std::endl;
+    }
+    m_categories.remove(c);
 }
