@@ -8,6 +8,7 @@ SeedAddWindow::SeedAddWindow(){
 }
 
 SeedAddWindow::SeedAddWindow(Controller* controller, Glib::RefPtr<Gtk::ListStore> seed_model, SeedColumnsModel* columns): SeedAddWindow(){
+    // TODO: créer la graine dès le début ?
     m_seed = NULL;
     m_controller = controller;
     m_seed_tree_model = seed_model;
@@ -15,6 +16,16 @@ SeedAddWindow::SeedAddWindow(Controller* controller, Glib::RefPtr<Gtk::ListStore
     set_title("Add a new seed");
     set_icon_name("document-new");
     create_gui();
+
+    // Select No Category
+    for (Gtk::TreeIter iter = m_category_combobox->get_model()->children().begin(); iter != m_category_combobox->get_model()->children().end(); iter++){
+        if ((*iter)[m_category_columns.m_category_name] == "No category"){
+            // We found the categories we have so we select it
+            m_category_combobox->set_active(iter);
+            break;
+        }
+    }
+
     connect_signals();
 }
 
@@ -114,6 +125,18 @@ void SeedAddWindow::save_seed(){
     m_seed->set_variety_name(m_variety_name_entry->get_buffer()->get_text());
     m_seed->set_binomial_nomenclature(m_binomial_name_entry->get_buffer()->get_text());
     m_seed->set_description(m_description_textfield->get_buffer()->get_text());
+
+    int plant_id = 0;
+    Gtk::TreeModel::iterator iter = m_category_combobox->get_active();
+    if (iter){
+        Gtk::TreeModel::Row row = *iter;
+        Category* c = m_controller->get_model()->get_category_by_name(row[m_category_columns.m_category_name]);
+        if (c != NULL){
+            plant_id = c->get_id();
+        }
+    }
+
+    m_seed->set_plant_category_id(plant_id);
     m_seed->print_seed();
 
     m_controller->get_model()->save_content();
@@ -129,6 +152,11 @@ void SeedAddWindow::save_seed(){
         row[m_seed_columns->m_seed_variety_name] = (*it)->get_variety_name();
         row[m_seed_columns->m_seed_binomial_nomenclature] = (*it)->get_binomial_nomenclature();
         row[m_seed_columns->m_seed_description] = (*it)->get_description();
+        Category* c = m_controller->get_model()->get_category_by_id((*it)->get_plant_category_id());
+        // TODO: if category id not found, we return the empty category
+        if (c != NULL){
+            row[m_seed_columns->m_seed_category] = c->get_category_name();
+        }
     }
 
     //hide();
@@ -139,6 +167,19 @@ void SeedAddWindow::fill_gui(){
     m_variety_name_entry->set_text(m_seed->get_variety_name());
     m_binomial_name_entry->set_text(m_seed->get_binomial_nomenclature());
     m_description_textfield->get_buffer()->set_text(m_seed->get_description());
+
+    // Fill in the combobox
+    Category* c = m_controller->get_model()->get_category_by_id(m_seed->get_plant_category_id());
+    if (c != NULL){
+        for (Gtk::TreeIter iter = m_category_combobox->get_model()->children().begin(); iter != m_category_combobox->get_model()->children().end(); iter++){
+            if ((*iter)[m_category_columns.m_category_name] == c->get_category_name()){
+                // We found the categories we have so we select it
+                m_category_combobox->set_active(iter);
+                break;
+            }
+        }
+    }
+    m_seed->print_seed();
 }
 
 Gtk::Box* SeedAddWindow::create_stock_box(){
@@ -182,7 +223,6 @@ Gtk::Grid* SeedAddWindow::create_main_info_grid(){
     for (std::list<Category*>::iterator it = categories.begin(); it != categories.end(); it++){
         Gtk::ListStore::Row row = *(m_category_tree_model->append());
         row[m_category_columns.m_category_name] = (*it)->get_category_name();
-        std::cout << (*it)->get_category_name() << std::endl;
     }
 
     m_category_combobox->pack_start(m_category_columns.m_category_name);
@@ -229,7 +269,8 @@ Gtk::Toolbar* SeedAddWindow::create_edit_toolbar(){
 }
 
 bool SeedAddWindow::on_window_close_event(GdkEventAny* event){
-    int result = display_confirm_close();
+    //int result = display_confirm_close();
+    int result = 0;
 
     switch (result){
         case 0:
@@ -256,17 +297,17 @@ bool SeedAddWindow::on_window_close_event(GdkEventAny* event){
 int SeedAddWindow::display_confirm_close(){
     // TODO : ask for confirmation if fields are filed
     /* if (m_seed->is_modified()){ */
-        //  SAVE, CANCEL, CLOSE
-        Gtk::MessageDialog dialog(*this, "Save changes to current seed ?",
-                false /* use_markup */, Gtk::MESSAGE_WARNING, Gtk::BUTTONS_NONE);
+    //  SAVE, CANCEL, CLOSE
+    Gtk::MessageDialog dialog(*this, "Save changes to current seed ?",
+            false /* use_markup */, Gtk::MESSAGE_WARNING, Gtk::BUTTONS_NONE);
 
-        dialog.set_icon_name("dialog-warning");
+    dialog.set_icon_name("dialog-warning");
 
-        dialog.add_button("Don't save", 0);
-        dialog.add_button("Cancel", 1);
-        dialog.add_button("Save", 2);
+    dialog.add_button("Don't save", 0);
+    dialog.add_button("Cancel", 1);
+    dialog.add_button("Save", 2);
 
-        return dialog.run();
+    return dialog.run();
     /* } else { */
     /*     return 0; */
     /* } */

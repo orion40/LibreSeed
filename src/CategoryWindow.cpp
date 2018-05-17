@@ -122,6 +122,8 @@ void CategoryWindow::delete_category(){
         std::cout << row[m_category_columns.m_category_id] << " - ";
         std::cout << row[m_category_columns.m_category_name] << "\n";
 
+        // TODO : make No Category undeletable
+
         Gtk::MessageDialog dialog_warning(*this, "Are you sure you want to delete this category ?",
                 false /* use_markup */, Gtk::MESSAGE_WARNING,
                 Gtk::BUTTONS_YES_NO);
@@ -166,7 +168,10 @@ void CategoryWindow::on_list_store_selection_change(){
 void CategoryWindow::fill_tree_store(){
     std::list<Category*> categories = m_controller->get_model()->get_categories();
     m_category_tree_model->clear();
-    for (std::list<Category*>::iterator it = categories.begin(); it != categories.end(); it++){
+    std::list<Category*>::iterator it = categories.begin();
+    // Skip empty category
+    it++;
+    for (; it != categories.end(); it++){
         Gtk::ListStore::Row row = *(m_category_tree_model->append());
         row[m_category_columns.m_category_id] = (*it)->get_id();
         row[m_category_columns.m_category_name] = (*it)->get_category_name();
@@ -185,15 +190,13 @@ void CategoryWindow::display_category_selection_needed(){
 }
 
 void CategoryWindow::on_list_store_row_change(const Gtk::TreeModel::Path& path, Gtk::TreeIter iter){
+    // TODO: propagate the changes to the main window
     Gtk::TreeModel::Row row = *iter;
-    std::cout << "[" << __FUNCTION__ << "] row id : " << row[m_category_columns.m_category_id] << " - ";
-    std::cout << row[m_category_columns.m_category_name] << "\n";
 
     Category* c =  m_controller->get_model()->get_category_by_id(row[m_category_columns.m_category_id]);
     if (c != NULL){
         c->set_category_name(row[m_category_columns.m_category_name]);
     } else {
-        std::cout << "creating new cat\n";
         c = new Category(row[m_category_columns.m_category_name]);
         m_controller->get_model()->add_category(c);
     }

@@ -251,12 +251,6 @@ void MainWindow::delete_selected_seed(){
     Gtk::TreeModel::iterator iter = refTreeSelection->get_selected();
     if (iter){
         Gtk::TreeModel::Row row = *iter;
-        std::cout << "Selected: ";
-        std::cout << row[m_seed_columns.m_seed_id] << " - ";
-        std::cout << row[m_seed_columns.m_seed_plant_name] << " - ";
-        std::cout << row[m_seed_columns.m_seed_binomial_nomenclature] << " - ";
-        std::cout << row[m_seed_columns.m_seed_description] << "\n";
-
         Gtk::MessageDialog dialog_warning(*this, "Are you sure you want to delete this seed ?",
                 false /* use_markup */, Gtk::MESSAGE_WARNING,
                 Gtk::BUTTONS_YES_NO);
@@ -272,7 +266,6 @@ void MainWindow::delete_selected_seed(){
                     Seed*s = m_controller->get_model()->getSeedById(row[m_seed_columns.m_seed_id]);
                     m_controller->get_model()->remove_seed(s);
                     m_seed_tree_model->erase(iter);
-                    //fill_tree_store();
                     break;
                 }
             case (Gtk::RESPONSE_DELETE_EVENT):
@@ -301,6 +294,16 @@ void MainWindow::fill_tree_store(){
         row[m_seed_columns.m_seed_variety_name] = (*it)->get_variety_name();
         row[m_seed_columns.m_seed_binomial_nomenclature] = (*it)->get_binomial_nomenclature();
         row[m_seed_columns.m_seed_description] = (*it)->get_description();
+        Category* c = m_controller->get_model()->get_category_by_id((*it)->get_plant_category_id());
+        // TODO: if category id not found, we return the empty category
+        if (c != NULL){
+            row[m_seed_columns.m_seed_category] = c->get_category_name();
+        } else {
+            Category* empty_category = m_controller->get_model()->get_category_by_name("No category");
+            if (empty_category != NULL) {
+            row[m_seed_columns.m_seed_category] = empty_category->get_category_name();
+            }
+        }
     }
 }
 
@@ -493,6 +496,10 @@ Gtk::TreeView* MainWindow::create_seed_list_store(){
     list_store->append_column("Description", m_seed_columns.m_seed_description);
     list_store->get_column(4)->set_sort_column(m_seed_columns.m_seed_description);
     list_store->get_column(4)->set_resizable(true);
+
+    list_store->append_column("Category", m_seed_columns.m_seed_category);
+    list_store->get_column(5)->set_sort_column(m_seed_columns.m_seed_category);
+    list_store->get_column(5)->set_resizable(true);
 
     return list_store;
 }

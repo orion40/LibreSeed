@@ -13,6 +13,7 @@ class SeedColumnsModel : public Gtk::TreeModel::ColumnRecord{
         Gtk::TreeModelColumn<Glib::ustring> m_seed_variety_name;
         Gtk::TreeModelColumn<Glib::ustring> m_seed_binomial_nomenclature;
         Gtk::TreeModelColumn<Glib::ustring> m_seed_description;
+        Gtk::TreeModelColumn<Glib::ustring> m_seed_category;
 
     private:
 

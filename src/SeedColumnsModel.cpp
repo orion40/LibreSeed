@@ -6,6 +6,7 @@ SeedColumnsModel::SeedColumnsModel(){
     add(m_seed_variety_name);
     add(m_seed_binomial_nomenclature);
     add(m_seed_description);
+    add(m_seed_category);
 }
 
 SeedColumnsModel::~SeedColumnsModel(){

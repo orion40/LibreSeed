@@ -56,7 +56,7 @@ bool Seed::fill_from_sql(sqlite3_stmt* stmt){
     set_variety_name(sqlite3_column_text(stmt, 2));
     set_binomial_nomenclature(sqlite3_column_text(stmt, 3));
     set_description(sqlite3_column_text(stmt, 4));
-    set_plant_category_id(sqlite3_column_int(stmt, 4));
+    set_plant_category_id(sqlite3_column_int(stmt, 5));
     set_modified(false);
     return true;
 }
@@ -67,7 +67,7 @@ bool Seed::save_to_db(sqlite3* db){
     if (get_id() == -1) {
         // non sauvegarde en BDD, il faut la créé
         // et récupéré l'ID associé
-        std::string insert_stmt_string = "INSERT INTO seed (seed_plant_name, seed_variety_name, seed_binomial_name, seed_description) VALUES (?, ?, ?, ?);";
+        std::string insert_stmt_string = "INSERT INTO seed (seed_plant_name, seed_variety_name, seed_binomial_name, seed_description, category_id) VALUES (?, ?, ?, ?, ?);";
         change_query_result = sqlite3_prepare_v2(db, insert_stmt_string.c_str(), -1, &edition_stmt, NULL);
         switch (change_query_result){
             case SQLITE_OK:
@@ -75,6 +75,7 @@ bool Seed::save_to_db(sqlite3* db){
                 sqlite3_bind_text(edition_stmt, 2, m_variety_name.c_str(), -1, SQLITE_STATIC);
             sqlite3_bind_text(edition_stmt, 3, m_binomial_nomenclature.c_str(), -1, SQLITE_STATIC);
                 sqlite3_bind_text(edition_stmt, 4, m_description.c_str(), -1, SQLITE_STATIC);
+                sqlite3_bind_int(edition_stmt, 5, m_plant_category_id);
                 switch (sqlite3_step(edition_stmt)){
                     case SQLITE_DONE:
                         std::cout << "Successfully added Seed to database\n";
@@ -95,7 +96,7 @@ bool Seed::save_to_db(sqlite3* db){
     } else {
         if (is_modified()){
         // existe en BDD, et a été modifié, il faut update
-            std::string insert_stmt_string = "UPDATE seed SET seed_plant_name = ?, seed_variety_name = ?, seed_binomial_name = ?, seed_description = ? WHERE seed_id = ?;";
+            std::string insert_stmt_string = "UPDATE seed SET seed_plant_name = ?, seed_variety_name = ?, seed_binomial_name = ?, seed_description = ?, category_id = ? WHERE seed_id = ?;";
             change_query_result = sqlite3_prepare_v2(db, insert_stmt_string.c_str(), -1, &edition_stmt, NULL);
             switch (change_query_result){
                 case SQLITE_OK:
@@ -103,7 +104,8 @@ bool Seed::save_to_db(sqlite3* db){
                     sqlite3_bind_text(edition_stmt, 2, m_variety_name.c_str(), -1, SQLITE_STATIC);
                     sqlite3_bind_text(edition_stmt, 3, m_binomial_nomenclature.c_str(), -1, SQLITE_STATIC);
                     sqlite3_bind_text(edition_stmt, 4, m_description.c_str(), -1, SQLITE_STATIC);
-                    sqlite3_bind_int(edition_stmt, 5, m_id);
+                    sqlite3_bind_int(edition_stmt, 5, m_plant_category_id);
+                    sqlite3_bind_int(edition_stmt, 6, m_id);
                     switch (sqlite3_step(edition_stmt)){
                         case SQLITE_DONE:
                             std::cout << "Successfully edited Seed in database\n";

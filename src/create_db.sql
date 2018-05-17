@@ -50,3 +50,9 @@ CREATE TABLE IF NOT EXISTS DateAnnotedBy (
     CONSTRAINT DateAnnotedBy_Seed_FK FOREIGN KEY (seed_id) REFERENCES Seed(seed_id),
     CONSTRAINT DateAnnotedBy_Date_FK FOREIGN KEY (date_id) REFERENCES Date(date_id)
 );
+
+-- Insert mandatory data
+INSERT OR IGNORE INTO Category (category_id, category_name)
+SELECT 1, 'No category'
+WHERE NOT EXISTS (SELECT 1 FROM Category WHERE category_id = 1 AND category_name = "");
+

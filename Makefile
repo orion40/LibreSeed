@@ -20,7 +20,7 @@ $(OUT_DIR)/$(TARGET): $(OUT_DIR)/main.o $(OUT_DIR)/Controller.o $(OUT_DIR)/SeedA
 	$(CC) $^ $(GTKMM3_LIB) $(SQLITE3_LIB) $(GLIBMM_LIB) $(CPPFLAGS) $(LDFLAGS) -o $@
 
 $(OUT_DIR)/main.o: $(IN_DIR)/main.cpp
-	$(CC) $(CPPFLAGS) $^ $(GTKMM3_LIB) -c -o $@
+	$(CC) $(GTKMM3_LIB) $(CPPFLAGS) $^ -c -o $@
 
 $(OUT_DIR)/Model.o: $(IN_DIR)/Model.cpp
 	$(CC) $(CPPFLAGS) $^ -c -o $@ $(GLIBMM_LIB) $(SQLITE3_LIB)

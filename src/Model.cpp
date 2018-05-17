@@ -166,28 +166,24 @@ bool Model::load_db(){
 bool Model::create_db(){
     std::cerr << "Creating database if needed...\n";
     char sql_script[] = "/home/whoami/programming/big_projects/seed_manager/src/create_db.sql";
-    int script_length;
     bool result = false;
-    std::ifstream script_fs(sql_script, std::fstream::in);
+    std::ifstream script_fs(sql_script, std::fstream::binary | std::fstream::in);
 
+    // TODO: fix the script reading bug
     if (script_fs) {
-        char* buffer;
+        std::stringstream buffer;
         char** err_msg = NULL;
-        script_fs.seekg(0, script_fs.end);
-        script_length = script_fs.tellg();
-        script_fs.seekg(0, script_fs.beg);
 
-        buffer = new char[script_length];
-        script_fs.read(buffer, script_length);
+        buffer << script_fs.rdbuf();
 
-        //std::cout << "sql:\n" << buffer << "\n";
+        //std::cout << "sql:\n" << buffer.str().c_str() << "\n";
 
-        if (sqlite3_exec(m_db, buffer, NULL, NULL, err_msg) == SQLITE_OK){
+        if (sqlite3_exec(m_db, buffer.str().c_str(), NULL, NULL, err_msg) == SQLITE_OK){
             result = true;
         } else {
             std::cerr << "Error executing request: " << sqlite3_errmsg(m_db) << "\n" << err_msg << "\n";
         }
-        delete buffer;
+        script_fs.close();
     } else {
         std::cerr << "Error opening db script: " << strerror(errno) << "\n";
     }
@@ -260,7 +256,6 @@ bool Model::open_file(std::string filename){
 
 Category* Model::get_category_by_id(int id){
     for (std::list<Category*>::iterator it = m_categories.begin(); it != m_categories.end(); it++){
-        (*it)->print_category();
         if ((*it)->get_id() == id){
             return (*it);
         }
@@ -268,6 +263,17 @@ Category* Model::get_category_by_id(int id){
 
     return NULL;
 }
+
+Category* Model::get_category_by_name(Glib::ustring name){
+    for (std::list<Category*>::iterator it = m_categories.begin(); it != m_categories.end(); it++){
+        if ((*it)->get_category_name() == name){
+            return (*it);
+        }
+    }
+
+    return NULL;
+}
+
 
 void Model::add_category(Category* c){
     m_categories.push_back(c);

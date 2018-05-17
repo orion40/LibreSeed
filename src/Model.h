@@ -28,6 +28,7 @@ class Model{
         void add_category(Category* c);
         void remove_category(Category* c);
         Category* get_category_by_id(int);
+        Category* get_category_by_name(Glib::ustring name);
         std::list<Category*> get_categories(){return m_categories;}
 
         bool export_seeds_to_xml(std::string filename, std::list<Seed*> seed_list);
