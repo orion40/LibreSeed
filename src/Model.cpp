@@ -169,16 +169,13 @@ bool Model::create_db(){
     bool result = false;
     std::ifstream script_fs(sql_script, std::fstream::binary | std::fstream::in);
 
-    // TODO: fix the script reading bug
     if (script_fs) {
-        std::stringstream buffer;
         char** err_msg = NULL;
-
-        buffer << script_fs.rdbuf();
+        std::string buffer =  std::string(std::istreambuf_iterator<char>(script_fs), std::istreambuf_iterator<char>());
 
         //std::cout << "sql:\n" << buffer.str().c_str() << "\n";
 
-        if (sqlite3_exec(m_db, buffer.str().c_str(), NULL, NULL, err_msg) == SQLITE_OK){
+        if (sqlite3_exec(m_db, buffer.c_str(), NULL, NULL, err_msg) == SQLITE_OK){
             result = true;
         } else {
             std::cerr << "Error executing request: " << sqlite3_errmsg(m_db) << "\n" << err_msg << "\n";
