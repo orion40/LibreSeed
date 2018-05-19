@@ -170,7 +170,7 @@ void MainWindow::create_gui(const Glib::RefPtr<Gtk::Application>& app){
     m_seed_list_store->grab_focus();
 
     // set_icon_from_file("../icons/");
-    set_default_size(600,500);
+    set_default_size(800,600);
     set_title("Seed Manager");
 }
 
