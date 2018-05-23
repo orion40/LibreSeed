@@ -1,0 +1,56 @@
+En pause pour le moment, il y a suffisament de fonctionnalités
+
+Export/import de graine sous format XML
+
+Ajout de champs pour les graines :
+
+Trivial:
+Help
+- Make a help window
+
+About
+- Properly handle the about window (close events, content...)
+
+SeedAddWindow:
+- Si graine pas modifié, on bloque la sauvegarde
+- Si graine pas enregistré, on bloque la suppresion
+- Gérer le popup de sauvegarde ou non (seulement si la graine à été modifié; si elle a été changer, on pourrait mettre une * dans le titre de la fenetre)
+- Trier par ordre alphabétique l'appariton des catégories dans le menu
+- S'il n'y a pas de catégories, sélectionné le no category par defaut
+
+CategoryWindow:
+- Modifier automatiquement les catégories affichées par MainWindow lors de l'edit du nom d'une catégorie ou sa suppression
+
+MainWindow:
+- Ne pas remonter automatiquement le scroll après avoir changé le contenu d'une case
+
+Statistiques:
+En général
+- Nombre de graines total
+- Nombre de graines de type X
+- Nombre de graines restantes dans tel catégorie
+Sur une sélection
+
+- Pouvoir choisir quels sont les infos de graines affichées (et s'en souvenir)
+
+Plus complexe:
+- Pouvoir lister des plantes compagnes ou à éviter
+- Faire un script d'install complet
+- Faire une façon générique d'avoir des éléments de liste (catégories, taille, type de terre... faisable avec une classe pour la fenetre de gestion par exemple)
+- Déclarer un DTD pour le XML
+    https://www.w3schools.com/xml/xml_dtd.asp
+    https://www.w3schools.com/xml/xml_dtd_intro.asp
+- Export sous XML
+- Faire un script d'install
+- Provenance (don, kokopelli, botanic)
+- Qualités (Bio, non bio, f1...)
+- Quantités et unité de quantité
+- Taille
+- Temps de croissance
+- Type de sol
+- Anti-insectes
+- Catégories
+- Dates générique (intervals, période de semis, récolte...)
+- Dates (concernant ces graines: récolte...)
+- Temps (conservation, avant une levée, avant une montée en graine...)
+- Images
