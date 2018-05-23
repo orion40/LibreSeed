@@ -165,7 +165,7 @@ bool Model::load_db(){
 
 bool Model::create_db(){
     std::cerr << "Creating database if needed...\n";
-    char sql_script[] = "/home/whoami/programming/big_projects/seed_manager/src/create_db.sql";
+    char sql_script[] = "./create_db.sql";
     bool result = false;
     std::ifstream script_fs(sql_script, std::fstream::binary | std::fstream::in);
 
