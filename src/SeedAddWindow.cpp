@@ -61,9 +61,9 @@ void SeedAddWindow::create_gui(){
 
     m_notebook->append_page(*m_main_info_grid, "Main Info");
     m_notebook->append_page(*m_description_box, "Description");
-    m_notebook->append_page(*m_dates_box, "Dates");
-    m_notebook->append_page(*m_stock_box, "Stock");
-    m_notebook->append_page(*m_pictures_box, "Pictures");
+    /* m_notebook->append_page(*m_dates_box, "Dates"); */
+    /* m_notebook->append_page(*m_stock_box, "Stock"); */
+    /* m_notebook->append_page(*m_pictures_box, "Pictures"); */
 
     m_main_box->pack_start(*m_edit_toolbar, Gtk::PACK_SHRINK);
     m_main_box->pack_start(*m_notebook, Gtk::PACK_EXPAND_WIDGET);

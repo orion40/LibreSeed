@@ -90,18 +90,18 @@ void MainWindow::create_gui(const Glib::RefPtr<Gtk::Application>& app){
         "        </item>"
         "      </section>"
         "    </submenu>"
-        "    <submenu>"
-        "      <attribute name='label' translatable='yes'>_Help</attribute>"
-        "      <item>"
-        "        <attribute name='label' translatable='yes'>_Help</attribute>"
-        "        <attribute name='action'>menu.help</attribute>"
-        "        <attribute name='accel'>F1</attribute>"
-        "      </item>"
-        "      <item>"
-        "        <attribute name='label' translatable='yes'>_About</attribute>"
-        "        <attribute name='action'>menu.about</attribute>"
-        "      </item>"
-        "    </submenu>"
+        /* "    <submenu>" */
+        /* "      <attribute name='label' translatable='yes'>_Help</attribute>" */
+        /* "      <item>" */
+        /* "        <attribute name='label' translatable='yes'>_Help</attribute>" */
+        /* "        <attribute name='action'>menu.help</attribute>" */
+        /* "        <attribute name='accel'>F1</attribute>" */
+        /* "      </item>" */
+        /* "      <item>" */
+        /* "        <attribute name='label' translatable='yes'>_About</attribute>" */
+        /* "        <attribute name='action'>menu.about</attribute>" */
+        /* "      </item>" */
+        /* "    </submenu>" */
         "  </menu>"
         "</interface>";
 
