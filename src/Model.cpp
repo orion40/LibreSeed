@@ -165,7 +165,7 @@ bool Model::load_db(){
 
 bool Model::create_db(){
     std::cerr << "Creating database if needed...\n";
-    char sql_script[] = "./create_db.sql";
+    char sql_script[] = SQL_CREATE_DB_SCRIPT;
     bool result = false;
     std::ifstream script_fs(sql_script, std::fstream::binary | std::fstream::in);
 

@@ -10,6 +10,7 @@
 #include "Seed.h"
 #include "Category.h"
 
+#define SQL_CREATE_DB_SCRIPT "/home/whoami/programming/big_projects/seed_manager/src/create_db.sql"
 
 class Model{
     public:

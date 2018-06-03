@@ -8,7 +8,6 @@ SeedAddWindow::SeedAddWindow(){
 }
 
 SeedAddWindow::SeedAddWindow(Controller* controller, Glib::RefPtr<Gtk::ListStore> seed_model, SeedColumnsModel* columns): SeedAddWindow(){
-    // TODO: créer la graine dès le début ?
     m_seed = NULL;
     m_controller = controller;
     m_seed_tree_model = seed_model;

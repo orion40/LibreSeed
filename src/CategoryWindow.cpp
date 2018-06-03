@@ -118,11 +118,9 @@ void CategoryWindow::delete_category(){
     Gtk::TreeModel::iterator iter = refTreeSelection->get_selected();
     if (iter){
         Gtk::TreeModel::Row row = *iter;
-        std::cout << "[" << __FUNCTION__ << "] Selected: ";
-        std::cout << row[m_category_columns.m_category_id] << " - ";
-        std::cout << row[m_category_columns.m_category_name] << "\n";
-
-        // TODO : make No Category undeletable
+        // std::cout << "[" << __FUNCTION__ << "] Selected: ";
+        // std::cout << row[m_category_columns.m_category_id] << " - ";
+        // std::cout << row[m_category_columns.m_category_name] << "\n";
 
         Gtk::MessageDialog dialog_warning(*this, "Are you sure you want to delete this category ?",
                 false /* use_markup */, Gtk::MESSAGE_WARNING,
@@ -175,7 +173,7 @@ void CategoryWindow::fill_tree_store(){
         Gtk::ListStore::Row row = *(m_category_tree_model->append());
         row[m_category_columns.m_category_id] = (*it)->get_id();
         row[m_category_columns.m_category_name] = (*it)->get_category_name();
-        std::cout << "[" << __FUNCTION__ << "] " << (*it)->get_category_name() << std::endl;
+        // std::cout << "[" << __FUNCTION__ << "] " << (*it)->get_category_name() << std::endl;
     }
 }
 

@@ -235,7 +235,7 @@ void MainWindow::on_open_seed_info_button_clicked(){
     {
         Gtk::TreeModel::Row row = *iter;
         //Do something with the row.
-        std::cout << "Row selected: ID=" << row[m_seed_columns.m_seed_id] << ", Name="             << row[m_seed_columns.m_seed_plant_name] << std::endl;
+        // std::cout << "Row selected: ID=" << row[m_seed_columns.m_seed_id] << ", Name="             << row[m_seed_columns.m_seed_plant_name] << std::endl;
         open_seed_info(m_controller->get_model()->getSeedById(row[m_seed_columns.m_seed_id]));
     } else {
         display_seed_selection_needed();
@@ -317,7 +317,7 @@ void MainWindow::on_list_store_row_activated(const Gtk::TreeModel::Path& path, G
     if(iter)
     {
         Gtk::TreeModel::Row row = *iter;
-        std::cout << "Row activated: ID=" << row[m_seed_columns.m_seed_id] << ", Name="             << row[m_seed_columns.m_seed_plant_name] << std::endl;
+        // std::cout << "Row activated: ID=" << row[m_seed_columns.m_seed_id] << ", Name="             << row[m_seed_columns.m_seed_plant_name] << std::endl;
         open_seed_info(m_controller->get_model()->getSeedById(row[m_seed_columns.m_seed_id]));
     }
 }
