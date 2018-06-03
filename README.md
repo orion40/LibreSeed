@@ -12,16 +12,16 @@ More features are planned someday but so far there is no plan to continue adding
 # Install
 
 These libraries are required to use the program:
-libglibmm-2.4
-libgtkmm-3.0
-libsqlite3
+* libglibmm-2.4
+* libgtkmm-3.0
+* libsqlite3
 
 # Building
 
 These libraries are required for compiling on a Debian Stretch :
-libglibmm-2.4-dev
-libgtkmm-3.0-dev
-libsqlite3-dev
+* libglibmm-2.4-dev
+* libgtkmm-3.0-dev
+* libsqlite3-dev
 
 running `make` from the command line in the root directory will compile the executable in a build/ directory.
 
